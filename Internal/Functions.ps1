@@ -19,7 +19,7 @@ Function Connect-OnlineService {
 
 Function Test-IsConnectedToService {
     [CmdletBinding()]Param(
-        [ValidateSet('AzureADv1','AzureADv2','CloudSolutionsProvider','ExchangeOnline','SecurityAndComplianceCenter')]
+        [ValidateSet('AzureADv1','AzureAD','CloudSolutionsProvider','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service
     )
 
@@ -31,18 +31,11 @@ Function Test-IsConnectedToService {
                 Write-Error 'Not connected to Azure AD! Please run Connect-AzureADv1 before using this command.'
             }
         }
-        'AzureADv2' {
+        'AzureAD' {
             try {
                 Get-AzureADTenantDetail
             } catch [Microsoft.Open.Azure.AD.CommonLibrary.AadNeedAuthenticationException] {
                 Write-Error 'Not connected to Azure AD! Please run Connect-AzureADv2 before using this command.'
-            }
-        }
-        'CloudSolutionsProvider' {
-            try {
-                Get-AzureADTenantDetail
-            } catch [Microsoft.Open.Azure.AD.CommonLibrary.AadNeedAuthenticationException] {
-                Write-Error 'Not connected to Azure AD! Please run either Connect-AzureADv2 or Connect-CloudSolutionsProvider before using this command.'
             }
         }
         'ExchangeOnline' {
