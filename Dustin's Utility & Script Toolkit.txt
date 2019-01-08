@@ -1,0 +1,16 @@
+Exchange Online PS Module
+https://cmdletpswmodule.blob.core.windows.net/exopsmodule/Microsoft.Online.CSE.PSModule.Client.application
+
+
+https://www.365admin.com.au/2017/01/how-to-configure-your-desktop-pc-for.html
+AzureRM > AZ - https://azure.microsoft.com/en-us/blog/azure-powershell-cross-platform-az-module-replacing-azurerm/
+
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_classes?view=powershell-6
+https://learn-powershell.net/2013/08/03/quick-hits-set-the-default-property-display-in-powershell-on-custom-objects/
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_format.ps1xml?view=powershell-6
+
+
+$searcher = [adsisearcher]"(samaccountname=$env:USERNAME)"
+$searcher.FindOne().Properties.mail
+
+([adsi]"LDAP://$(whoami /fqdn)").mail

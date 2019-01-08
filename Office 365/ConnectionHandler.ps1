@@ -12,7 +12,7 @@ Function Connect-ExchangeOnline {
     
     Remove-BrokenOrClosedDUSTPSSessions
 
-    Import-Module $((Get-ChildItem -Path $($env:LOCALAPPDATA+'\Apps\2.0\') -Filter Microsoft.Exchange.Management.ExoPowershellModule.dll -Recurse ).FullName|?{$_ -notmatch '_none_'}|select -First 1)
+    Import-Module $((Get-ChildItem -Path $($env:LOCALAPPDATA+'\Apps\2.0\') -Filter Microsoft.Exchange.Management.ExoPowershellModule.dll -Recurse ).FullName | Where-Object {$_ -notmatch '_none_'} | Select-Object -First 1)
     
     if ($Delegated) {
         # MFA is not supported using delegated admin
