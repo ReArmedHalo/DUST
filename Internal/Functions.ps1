@@ -1,3 +1,22 @@
+Function Connect-OnlineService {
+    [CmdletBinding()] Param(
+        [ValidateSet('AzureADv1','AzureAD','ExchangeOnline','SecurityAndComplianceCenter')]
+        [String] $Service,
+
+        [Parameter(ParameterSetName='Delegated')]
+        [Switch] $Delegated,
+
+        [Parameter(ParameterSetName='Delegated')]
+        [String] $ClientDomain
+    )
+
+    if ($Delegated) {
+        Invoke-Expression -Command "Connect-$Service -Delegated -ClientDomain $ClientDomain"
+    } else {
+        Invoke-Expression -Command "Connect-$Service"
+    }
+}
+
 Function Test-IsConnectedToService {
     [CmdletBinding()]Param(
         [ValidateSet('AzureADv1','AzureADv2','CloudSolutionsProvider','ExchangeOnline','SecurityAndComplianceCenter')]
