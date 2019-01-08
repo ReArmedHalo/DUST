@@ -4,7 +4,7 @@ Function Get-AzureTenantId {
         [String] $DisplayName
     )
     
-    if ( (Test-IsConnectedToService 'CloudSolutionsProvider') -OR (Test-IsConnectedToService 'AzureADv2') ) {
+    if (Test-IsConnectedToService 'AzureADv2') {
         Get-AzureADContract -All:$true | Where-Object {$_.DisplayName -Match $DisplayName}
     }
 }
@@ -24,7 +24,7 @@ Function Connect-CustomerAzureADTenant {
         [String] $TenantId
     )
 
-    if ( (Test-IsConnectedToService 'CloudSolutionsProvider' -ErrorAction SilentlyContinue) -OR (Test-IsConnectedToService 'AzureADv2' -ErrorAction SilentlyContinue) ) {
+    if (Test-IsConnectedToService 'AzureADv2' -ErrorAction SilentlyContinue) {
         Disconnect-AzureAD
     }
 
