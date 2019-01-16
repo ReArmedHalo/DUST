@@ -1,3 +1,13 @@
+<#
+    .Synopsis
+    Facade to individual connection handlers
+    .DESCRIPTION
+    Handles calling the proper connection handler for a given service.
+    .EXAMPLE
+    Connect-OnlineService ExchangeOnline
+    .EXAMPLE
+    Connect-OnlineService ExchangeOnline -Delegated -ClientDomain fabrikam.com
+#>
 Function Connect-OnlineService {
     [CmdletBinding()] Param(
         [ValidateSet('AzureADv1','AzureAD','ExchangeOnline','SecurityAndComplianceCenter')]
@@ -7,7 +17,10 @@ Function Connect-OnlineService {
         [Switch] $Delegated,
 
         [Parameter(ParameterSetName='Delegated')]
-        [String] $ClientDomain
+        [String] $ClientDomain,
+
+        [Parameter(ParameterSetName='Delegated')]
+        [PSCredential] $Credential
     )
 
     if ($Delegated) {
