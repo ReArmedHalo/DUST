@@ -9,8 +9,8 @@
     Connect-OnlineService ExchangeOnline -Delegated -ClientDomain fabrikam.com
 #>
 Function Connect-OnlineService {
-    [CmdletBinding()] Param(
-        [ValidateSet('AzureADv1','AzureAD','ExchangeOnline','SecurityAndComplianceCenter')]
+    [CmdletBinding()] Param (
+        [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service,
 
         [Parameter(ParameterSetName='Delegated')]
@@ -24,41 +24,46 @@ Function Connect-OnlineService {
     )
 
     if ($Delegated) {
-        Invoke-Expression -Command "Connect-$Service -Delegated -ClientDomain $ClientDomain"
+        if ($Service -match 'SecurityAndComplianceCenter') {
+            Write-Warning 'Security and Compliance Center does not support delegated access at all. Redirecting your request to the non-delegated connection handler...'
+            Connect-SecurityAndComplianceCenter
+        } else {
+            Invoke-Expression -Command "Connect-$Service -Delegated -ClientDomain $ClientDomain -Credential $Credential"
+        }
     } else {
         Invoke-Expression -Command "Connect-$Service"
     }
 }
 
 Function Test-IsConnectedToService {
-    [CmdletBinding()]Param(
-        [ValidateSet('AzureADv1','AzureAD','CloudSolutionsProvider','ExchangeOnline','SecurityAndComplianceCenter')]
+    [CmdletBinding()] Param (
+        [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service
     )
 
     switch ($Service) {
-        'AzureADv1' {
+        'MicrosoftOnline' {
             try {
                 Get-MsolCompanyInformation
             } catch [Microsoft.Online.Administration.Automation.MicrosoftOnlineException] {
-                Write-Error 'Not connected to Azure AD! Please run Connect-AzureADv1 before using this command.'
+                Write-Error 'Not connected to Microsoft Online! Please run ''Connect-OnlineService MicrosoftOnline'' before using this command.'
             }
         }
-        'AzureAD' {
+        'AzureADv2' {
             try {
                 Get-AzureADTenantDetail
             } catch [Microsoft.Open.Azure.AD.CommonLibrary.AadNeedAuthenticationException] {
-                Write-Error 'Not connected to Azure AD! Please run Connect-AzureADv2 before using this command.'
+                Write-Error 'Not connected to Azure AD! Please run ''Connect-OnlineService AzureADv2'' before using this command.'
             }
         }
         'ExchangeOnline' {
             if (!(Get-PSSession | Where-Object { ($_.Name -like 'DUST-EXO' -or $_.ConfigurationName -like 'Microsoft.Exchange') -and $_.State -like 'Opened' })) {
-                Write-Error 'Not connected to Exchange online! Please use Connect-ExchangeOnline before using this command.'
+                Write-Error 'Not connected to Exchange online! Please use ''Connect-OnlineService ExchangeOnline'' before using this command.'
             }
         }
         'SecurityAndComplianceCenter' {
             if (!(Get-PSSession | Where-Object { ($_.Name -like 'DUST-SCC' -or $_.ConfigurationName -like 'Microsoft.Exchange') -and $_.State -like 'Opened' })) {
-                Write-Error 'Not connected to the Security and Compliance Center! Please use Connect-SecurityAndCompliance before using this command.'
+                Write-Error 'Not connected to the Security and Compliance Center! Please use ''Connect-OnlineService SecurityAndComplianceCenter'' before using this command.'
             }
         }
     }
@@ -66,7 +71,7 @@ Function Test-IsConnectedToService {
 }
 
 Function Remove-BrokenOrClosedDUSTPSSessions {
-    [CmdletBinding()]Param()
+    [CmdletBinding()] Param ()
 
     Write-Verb "Checking for broken or closed connections..."
     $psBroken = Get-PSSession | where-object {$_.State -like "*Broken*" -and $_.Name -like "DUST-*"}
@@ -93,7 +98,7 @@ Function Remove-BrokenOrClosedDUSTPSSessions {
 }
 
 Function Install-DUSTDependencies {
-    [CmdletBinding()]Param()
+    [CmdletBinding()] Param ()
 
     $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
     

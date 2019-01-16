@@ -9,14 +9,6 @@ Function Get-AzureTenantId {
     }
 }
 
-Function Connect-CustomerMsolTenant {
-    [cmdletbinding()]Param(
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-        [Alias('CustomerContextId')]
-        [String] $TenantId
-    )
-}
-
 Function Connect-CustomerAzureADTenant {
     [cmdletbinding()]Param(
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
