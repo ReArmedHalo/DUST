@@ -1,10 +1,8 @@
 # Use only for debug output, use standard Write-Verbose otherwise
 Function Write-Verb {
-    [CmdletBinding()]
-    param (
+    [CmdletBinding()] Param (
         [Parameter(Mandatory)]
-        [String]
-        $Message
+        [String] $Message
     )
 
     $caller = (Get-PSCallStack).Command[1]
@@ -14,11 +12,9 @@ Function Write-Verb {
 
 # Use only for debug output, use standard Write-Information otherwise
 Function Write-Info {
-    [CmdletBinding()]
-    param (
+    [CmdletBinding()] Param (
         [Parameter(Mandatory)]
-        [String]
-        $Message
+        [String] $Message
     )
 
     $caller = (Get-PSCallStack).Command[1]

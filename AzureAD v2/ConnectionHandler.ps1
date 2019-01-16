@@ -1,5 +1,5 @@
 Function Connect-AzureADv2 {
-    [CmdletBinding()]Param()
+    [CmdletBinding()] Param ()
     
     try {
         Get-AzureADTenantDetail

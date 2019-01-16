@@ -1,5 +1,5 @@
 Function Get-AzureTenantId {
-    [cmdletbinding()]Param(
+    [cmdletbinding()] Param (
         [Parameter(Mandatory)]
         [String] $DisplayName
     )
@@ -10,7 +10,7 @@ Function Get-AzureTenantId {
 }
 
 Function Connect-ClientAzureADTenant {
-    [cmdletbinding()]Param(
+    [cmdletbinding()] Param (
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
         [Alias('CustomerContextId')]
         [String] $TenantId

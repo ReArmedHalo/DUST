@@ -9,14 +9,14 @@
     Connect-ExchangeOnline -Delegated -ClientDomain fabrikam.com
 #>
 Function Connect-ExchangeOnline {
-    [CmdletBinding(DefaultParameterSetName='Direct')]Param(
+    [CmdletBinding()] Param (
         [Parameter(ParameterSetName='Delegated')]
         [Switch] $Delegated,
 
-        [Parameter(ParameterSetName='Delegated',Mandatory=$true)]
+        [Parameter(ParameterSetName='Delegated',Mandatory)]
         [String] $ClientDomain,
 
-        [Parameter(ParameterSetName='Delegated',Mandatory=$true)]
+        [Parameter(ParameterSetName='Delegated',Mandatory)]
         [PSCredential] $Credential
     )
     
@@ -36,7 +36,7 @@ Function Connect-ExchangeOnline {
 }
 
 Function Disconnect-ExchangeOnline {
-    [CmdletBinding()]Param()
+    [CmdletBinding()] Param ()
     
     Get-PSSession | Where-Object {$_.Name -like 'DUST-EXO'} | Remove-PSSession
 }

@@ -10,17 +10,17 @@
 #>
 Function Connect-OnlineService {
     [CmdletBinding()] Param (
-        [Parameter(Mandatory=$true,Position=1)]
+        [Parameter(Mandatory,Position=1)]
         [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service,
 
         [Parameter(ParameterSetName='Delegated')]
         [Switch] $Delegated,
 
-        [Parameter(ParameterSetName='Delegated',Mandatory=$true,Position=3)]
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=3)]
         [String] $ClientDomain,
 
-        [Parameter(ParameterSetName='Delegated',Mandatory=$true)]
+        [Parameter(ParameterSetName='Delegated',Mandatory)]
         [PSCredential] $Credential
     )
 

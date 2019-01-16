@@ -1,5 +1,5 @@
 Function Get-MailboxForwarding {
-    [CmdletBinding()]Param(
+    [CmdletBinding()] Param (
         [Parameter()]
         [String] $UserPrincipalName
     )
@@ -34,7 +34,7 @@ Function Get-MailboxForwarding {
 }
 
 Function Get-InboxMailForwarding {
-    [CmdletBinding()]Param(
+    [CmdletBinding()] Param (
         [Parameter()]
         [String] $UserPrincipalName
     )
