@@ -2,7 +2,7 @@
     .Synopsis
     Converts an Active Directory GUID to an Azure AD Immutable ID.
     .DESCRIPTION
-    Given a single or multiple Active Directory user identities, will return a list with the users UPN and ImmutableId.
+    Given a single or multiple Active Directory user identity, will return the ImmutableId.
     .EXAMPLE
     Convert-ToImmutableId jdoe
     .EXAMPLE
@@ -18,10 +18,16 @@ Function Convert-ToImmutableId {
         $user = Get-ADUser -Identity $Identity
         $guid = $user.ObjectGuid
         $upn = $user.UserPrincipalName
-        [System.Convert]::ToBase64String($guid.tobytearray())
+        $immutableId = [System.Convert]::ToBase64String($guid.tobytearray())
 
-        $row = @(
-            'UserPrincipalName'
-        )
+        $row = @()
+
+        $item = New-Object PSObject
+        $item | Add-Member -type NoteProperty -Name 'UserPrincipalName' -Value $upn
+        $item | Add-Member -type NoteProperty -Name 'ImmutableId' -Value $immutableId
+        
+        $row += $item
+
+        return $row
     }
 }

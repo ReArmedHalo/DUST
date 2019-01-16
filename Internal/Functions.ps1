@@ -10,16 +10,17 @@
 #>
 Function Connect-OnlineService {
     [CmdletBinding()] Param (
+        [Parameter(Mandatory=$true,Position=1)]
         [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service,
 
         [Parameter(ParameterSetName='Delegated')]
         [Switch] $Delegated,
 
-        [Parameter(ParameterSetName='Delegated')]
+        [Parameter(ParameterSetName='Delegated',Mandatory=$true,Position=3)]
         [String] $ClientDomain,
 
-        [Parameter(ParameterSetName='Delegated')]
+        [Parameter(ParameterSetName='Delegated',Mandatory=$true)]
         [PSCredential] $Credential
     )
 
@@ -28,10 +29,12 @@ Function Connect-OnlineService {
             Write-Warning 'Security and Compliance Center does not support delegated access at all. Redirecting your request to the non-delegated connection handler...'
             Connect-SecurityAndComplianceCenter
         } else {
-            Invoke-Expression -Command "Connect-$Service -Delegated -ClientDomain $ClientDomain -Credential $Credential"
+            $cmd = Get-Command "Connect-$Service"
+            & $cmd -Delegated -ClientDomain $ClientDomain -Credential $Credential
+            #Invoke-Expression -Command "Connect-$Service -Delegated -ClientDomain $ClientDomain -Credential $Credential"
         }
     } else {
-        Invoke-Expression -Command "Connect-$Service"
+        & (Get-Command "Connect-$Service")
     }
 }
 
@@ -100,6 +103,9 @@ Function Remove-BrokenOrClosedDUSTPSSessions {
 Function Install-DUSTDependencies {
     [CmdletBinding()] Param ()
 
+    # WORK IN PROGRESS
+    # This function currently doesn't operate properly, most code here was thrown down just so dependencies are documented somewhere
+
     $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
     
     if ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -107,14 +113,14 @@ Function Install-DUSTDependencies {
         # TODO: Write-Progress instead of write-outputs
 
         # Exchange Online Remote PowerShell Modul
-        Write-Info 'Downloading Exchange Online Powershell Module...'
+        Write-Information 'Downloading Exchange Online Powershell Module...'
         Invoke-WebRequest -Uri 'https://cmdletpswmodule.blob.core.windows.net/exopsmodule/Microsoft.Online.CSE.PSModule.Client.application' -UseBasicParsing -OutFile "$env:temp\Microsoft.Online.CSE.PSModule.Client.application"
         Write-Output 'You will be prompted to complete the installation of the Exchange Online Powershell Module. Please follow the prompts.'
-        Write-Info 'Installing Exchange Online Powershell Module...'
+        Write-Information 'Installing Exchange Online Powershell Module...'
         Start-Process -FilePath "$env:temp\Microsoft.Online.CSE.PSModule.Client.application" -WorkingDirectory "$env:temp" -Wait
 
         # Microsoft Online Services Sign-In Assistant for IT Professionals RTW (x64)
-        Write-Info 'Downloading Microsoft Online Services Sign-In Assistant for IT Professionals RTW x64...'
+        Write-Information 'Downloading Microsoft Online Services Sign-In Assistant for IT Professionals RTW x64...'
         Invoke-WebRequest -Uri 'https://download.microsoft.com/download/5/0/1/5017D39B-8E29-48C8-91A8-8D0E4968E6D4/en/msoidcli_64.msi' -UseBasicParsing -OutFile "$env:temp\msoidcli_64.msi"
         Start-Process -FilePath "$env:temp\msoidcli_64.msi" -WorkingDirectory "$env:temp" -Wait
 
