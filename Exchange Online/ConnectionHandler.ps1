@@ -10,13 +10,14 @@
 #>
 Function Connect-ExchangeOnline {
     [CmdletBinding()] Param (
-        [Parameter(ParameterSetName='Delegated')]
+        [Parameter(ParameterSetName='Direct')]
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=1)]
         [Switch] $Delegated,
 
-        [Parameter(ParameterSetName='Delegated',Mandatory)]
-        [String] $ClientDomain,
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=2)]
+        [String] $ClientDomain, 
 
-        [Parameter(ParameterSetName='Delegated',Mandatory)]
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=3)]
         [PSCredential] $Credential
     )
     

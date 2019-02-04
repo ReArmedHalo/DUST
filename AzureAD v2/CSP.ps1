@@ -1,4 +1,4 @@
-Function Get-AzureTenantId {
+Function Find-AzureTenantIdByName {
     [cmdletbinding()] Param (
         [Parameter(Mandatory)]
         [String] $DisplayName
