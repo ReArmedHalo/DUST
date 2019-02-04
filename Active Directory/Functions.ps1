@@ -4,30 +4,46 @@
     .DESCRIPTION
     Given a single or multiple Active Directory user identity, will return the ImmutableId.
     .EXAMPLE
-    Convert-ToImmutableId jdoe
+    ConvertTo-ImmutableId jdoe
+
+    ConvertTo-ImmutableId -UserGUID '00000000-0000-0000-0000-00000000000'
     .EXAMPLE
     Get-ADUser -Filter * -SearchBase 'OU=Finance,OU=UserAccounts,DC=FABRIKAM,DC=COM' | Convert-ToImmutableId
+
+    $guid = Get-AdUser -Identity jdoe | Select ObjectGUID
+    ConvertTo-ImmutableId -UserGUID $guid
 #>
-Function Convert-ToImmutableId {
+Function ConvertTo-ImmutableId {
     [cmdletbinding()]Param(
-        [Parameter(ValueFromPipeline)]
-        [String] $Identity
+        [Parameter(ParameterSetName='FromADIdentity',Mandatory,Position=1,ValueFromPipeline)]
+        [String] $Identity,
+
+        [Parameter(ParameterSetName='FromGUIDString',Mandatory,Position=1)]
+        [GUID] $UserGUID
     )
 
     Process {
-        $user = Get-ADUser -Identity $Identity
-        $guid = $user.ObjectGuid
-        $upn = $user.UserPrincipalName
-        $immutableId = [System.Convert]::ToBase64String($guid.tobytearray())
+        if ($UserGUID) {
+            return [System.Convert]::ToBase64String($UserGUID.ToByteArray())
+        } else {
+            try {
+                $user = Get-ADUser -Identity $Identity
+                $guid = $user.ObjectGuid
+                $upn = $user.UserPrincipalName
+                $immutableId = [System.Convert]::ToBase64String($guid.ToByteArray())
 
-        $row = @()
+                $row = @()
 
-        $item = New-Object PSObject
-        $item | Add-Member -type NoteProperty -Name 'UserPrincipalName' -Value $upn
-        $item | Add-Member -type NoteProperty -Name 'ImmutableId' -Value $immutableId
-        
-        $row += $item
-
-        return $row
+                $item = New-Object PSObject
+                $item | Add-Member -type NoteProperty -Name 'UserPrincipalName' -Value $upn
+                $item | Add-Member -type NoteProperty -Name 'ImmutableId' -Value $immutableId
+                
+                $row += $item
+                return $row
+            }
+            catch {
+                Write-Error $_
+            }
+        }
     }
 }
