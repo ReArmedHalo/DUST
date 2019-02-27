@@ -9,33 +9,65 @@
     Connect-OnlineService ExchangeOnline -Delegated -ClientDomain fabrikam.com
 #>
 Function Connect-OnlineService {
-    [CmdletBinding()] Param (
-        [Parameter(ParameterSetName='Direct',Mandatory,Position=1)]
-        [Parameter(ParameterSetName='Delegated',Mandatory,Position=1)]
+    [CmdletBinding(DefaultParameterSetName='Direct')]
+    Param (
+        [Parameter(ParameterSetName='Direct',Mandatory=$true,Position=0)]
+        [Parameter(ParameterSetName='Delegated',Mandatory=$true,Position=0)]
         [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
-        [String] $Service,
-
-        [Parameter(ParameterSetName='Delegated',Position=2)]
-        [Switch] $Delegated,
-
-        [Parameter(ParameterSetName='Delegated',Mandatory,Position=3)]
-        [String] $ClientDomain,
-
-        [Parameter(ParameterSetName='Delegated',Mandatory,Position=4)]
-        [PSCredential] $Credential
+        [String] $Service
     )
 
-    if ($Delegated) {
-        if ($Service -match 'SecurityAndComplianceCenter') {
-            Write-Warning 'Security and Compliance Center does not support delegated access at all. Redirecting your request to the non-delegated connection handler...'
-            Connect-SecurityAndComplianceCenter
-        } else {
-            $cmd = Get-Command "Connect-$Service"
-            & $cmd -Delegated -ClientDomain $ClientDomain -Credential $Credential
-            #Invoke-Expression -Command "Connect-$Service -Delegated -ClientDomain $ClientDomain -Credential $Credential"
+    DynamicParam {
+        $services = @('MicrosoftOnline','AzureADv2','ExchangeOnline')
+
+        if ($services -contains $Service) {
+            # Delegated attribute
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $delegatedAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $delegatedAttribute.Position = 1
+            $delegatedAttribute.ParameterSetName = 'Delegated'
+            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+            $attributeCollection.Add($delegatedAttribute)
+            $delegatedParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Delegated', [Switch], $attributeCollection)
+            $RuntimeParameterDictionary.Add('Delegated', $delegatedParam)
+
+            # ClientDomain attribute
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $clientDomainAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $clientDomainAttribute.Position = 2
+            $clientDomainAttribute.ParameterSetName = 'Delegated'
+            $clientDomainAttribute.Mandatory = $true
+            $attributeCollection.Add($clientDomainAttribute)
+            $clientDomainParam = New-Object System.Management.Automation.RuntimeDefinedParameter('ClientDomain', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('ClientDomain', $clientDomainParam)
+
+            # Credential
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $credentialAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $credentialAttribute.Position = 3
+            $credentialAttribute.ParameterSetName = "Delegated"
+            $credentialAttribute.Mandatory = $true
+            $attributeCollection.Add($credentialAttribute)
+            $credentialParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Credential', [PSCredential], $attributeCollection)
+            $RuntimeParameterDictionary.Add('Credential', $credentialParam)
+
+            return $RuntimeParameterDictionary
         }
-    } else {
-        & (Get-Command "Connect-$Service")
+    }
+
+    Process {
+        if ($PSBoundParameters.Delegated) {
+            if ($Service -match 'SecurityAndComplianceCenter') {
+                Write-Warning 'Security and Compliance Center does not support delegated access at all. Redirecting your request to the non-delegated connection handler...'
+                Connect-SecurityAndComplianceCenter
+            } else {
+                $cmd = Get-Command "Connect-$Service"
+                & $cmd -Delegated -ClientDomain ($PSBoundParameters.ClientDomain) -Credential ($PSBoundParameters.Credential)
+                #Invoke-Expression -Command "Connect-$Service -Delegated -ClientDomain $ClientDomain -Credential $Credential"
+            }
+        } else {
+            & (Get-Command "Connect-$Service")
+        }
     }
 }
 
@@ -115,7 +147,7 @@ Function Install-DUSTDependencies {
 
         # Exchange Online Remote PowerShell Modul
         Write-Information 'Downloading Exchange Online Powershell Module...'
-        Invoke-WebRequest -Uri 'https://cmdletpswmodule.blob.core.windows.net/exopsmodule/Microsoft.Online.CSE.PSModule.Client.application' -UseBasicParsing -OutFile "$env:temp\Microsoft.Online.CSE.PSModule.Client.application"
+        Invoke-WebRequest -Uri 'https://cmdletpswmodule.blob.core.windows.net/exopsmodule/Microsoft.Online.CSE.PSModule.Client.application' -OutFile "$env:temp\Microsoft.Online.CSE.PSModule.Client.application"
         Write-Output 'You will be prompted to complete the installation of the Exchange Online Powershell Module. Please follow the prompts.'
         Write-Information 'Installing Exchange Online Powershell Module...'
         Start-Process -FilePath "$env:temp\Microsoft.Online.CSE.PSModule.Client.application" -WorkingDirectory "$env:temp" -Wait
