@@ -143,18 +143,15 @@ Function Install-DUSTDependencies {
         $stepMax = 6
 
         Write-Progress -Id 1 -Activity $progressActivity -Status "Preparing" -PercentComplete 5
-        Start-Sleep -Seconds 2
 
         # Exchange Online Remote PowerShell Modul
         Write-Progress -Id 1 -Activity $progressActivity -Status "Step 1 of $stepMax" -CurrentOperation 'Installing Exchange Online PowerShell Module (ClickOnce)' -PercentComplete 10
         Install-ClickOnce -Manifest 'https://cmdletpswmodule.blob.core.windows.net/exopsmodule/Microsoft.Online.CSE.PSModule.Client.application'
-        Start-Sleep -Seconds 10
 
         # Microsoft Online Services Sign-In Assistant for IT Professionals RTW (x64)
         Write-Progress -Id 1 -Activity $progressActivity -Status "Step 2 of $stepMax" -CurrentOperation 'Installing Microsoft Online Services Sign-In Assistant for IT Professionals (x64 MSI)' -PercentComplete 30
         Invoke-WebRequest -Uri 'https://download.microsoft.com/download/5/0/1/5017D39B-8E29-48C8-91A8-8D0E4968E6D4/en/msoidcli_64.msi' -UseBasicParsing -OutFile "$env:temp\msoidcli_64.msi"
         Start-Process -FilePath 'C:\Windows\System32\msiexec.exe' -ArgumentList '/qb /I', "$env:temp\msoidcli_64.msi" -WorkingDirectory "$env:temp" -Wait
-        Start-Sleep -Seconds 10
         
         Write-Progress -Id 1 -Activity $progressActivity -Status "Step 3 of $stepMax" -CurrentOperation 'Checking for Module: MSOnline' -PercentComplete 40
         # Azure AD v1
