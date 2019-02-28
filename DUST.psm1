@@ -1,4 +1,4 @@
-foreach($import in @( Get-ChildItem -Path "$PSScriptRoot\Internal\*.ps1" -ErrorAction SilentlyContinue )) {
+foreach($import in @( Get-ChildItem -Path "$PSScriptRoot\Support\*.ps1" -ErrorAction SilentlyContinue )) {
     try {
         . $import.fullname
     } catch {
