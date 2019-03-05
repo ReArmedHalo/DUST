@@ -9,15 +9,15 @@
     Connect-ExchangeOnline -Delegated -ClientDomain fabrikam.com
 #>
 Function Connect-ExchangeOnline {
-    [CmdletBinding()] Param (
-        [Parameter(ParameterSetName='Direct')]
-        [Parameter(ParameterSetName='Delegated',Mandatory,Position=1)]
+    [CmdletBinding(DefaultParameterSetName='Direct')] Param (
+        [Parameter(ParameterSetName='Direct',Position=0)]
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=0)]
         [Switch] $Delegated,
 
-        [Parameter(ParameterSetName='Delegated',Mandatory,Position=2)]
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=1)]
         [String] $ClientDomain, 
 
-        [Parameter(ParameterSetName='Delegated',Mandatory,Position=3)]
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=2)]
         [PSCredential] $Credential
     )
     
