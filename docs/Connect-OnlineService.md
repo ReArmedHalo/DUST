@@ -1,7 +1,7 @@
 ---
 external help file: DUST-help.xml
 Module Name: DUST
-online version:
+online version: https://rearmedhalo.github.io/DUST/Connect-OnlineService.html
 schema: 2.0.0
 ---
 
@@ -19,7 +19,7 @@ Connect-OnlineService [-Service] <String> [<CommonParameters>]
 
 ### Delegated
 ```
-Connect-OnlineService [-Service] <String> [-Delegated] [-ClientDomain] <String> [-Credential] <PSCredential> [<CommonParameters>]
+Connect-OnlineService [-Service] <String> [-Delegated] <Switch> [-ClientDomain] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -34,13 +34,15 @@ Connect-OnlineService ExchangeOnline
 
 ### EXAMPLE 2
 ```
-Connect-OnlineService ExchangeOnline -Delegated -ClientDomain fabrikam.com
+Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain fabrikam.com
 ```
 
 ## PARAMETERS
 
 ### -Service
-{{Fill Service Description}}
+Defines the service that you wish to connect to. Accepts: `MicrosoftOnline`, `AzureADv2`, `ExchangeOnline`, `SecurityAndComplianceCenter`.
+
+If you specify `SecurityAndComplianceCenter`, then `-Delegated` and `-ClientDomain` are not supported as Microsoft does not currently support delegated access to the Security and Compliance Center.
 
 ```yaml
 Type: String
@@ -55,11 +57,11 @@ Accept wildcard characters: False
 ```
 
 ### -Delegated
-Informs the function that you want to use delegated credentials for access to the tenant service
+Instructs the function that you wish to connect with delegated permissions to a tenent
 
 ```yaml
 Type: Switch
-Parameter Sets: (All)
+Parameter Sets: Delegated
 Aliases:
 
 Required: True
@@ -70,11 +72,11 @@ Accept wildcard characters: False
 ```
 
 ### -ClientDomain
-The tenant domain to connect to.
+The tenant domain name (contoso.onmicrosoft.com) or domain name registered with the tenant you wish to connect to (contoso.com)
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: Delegated
 Aliases:
 
 Required: True
@@ -85,8 +87,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

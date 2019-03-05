@@ -1,12 +1,5 @@
 <#
-    .Synopsis
-    Facade to individual connection handlers
-    .DESCRIPTION
-    Handles calling the proper connection handler for a given service.
-    .EXAMPLE
-    Connect-OnlineService ExchangeOnline
-    .EXAMPLE
-    Connect-OnlineService ExchangeOnline -Delegated -ClientDomain fabrikam.com
+.EXTERNALHELP Connect-OnlineService-help.xml
 #>
 Function Connect-OnlineService {
     [CmdletBinding(DefaultParameterSetName='Direct')]
