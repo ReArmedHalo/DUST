@@ -1,4 +1,4 @@
-<#
+<# 
 .EXTERNALHELP Connect-OnlineService-help.xml
 #>
 Function Connect-OnlineService {
@@ -120,6 +120,9 @@ Function Remove-BrokenOrClosedDUSTPSSessions {
     Write-Verb "Done"
 }
 
+<# 
+.EXTERNALHELP Install-DUSTDependencies-help.xml
+#>
 Function Install-DUSTDependencies {
     [CmdletBinding()] Param (
         [Parameter()]

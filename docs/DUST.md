@@ -10,6 +10,8 @@ Locale: en-US
 ## Description
 DUST is a set of functions to ease administration and access to various Microsoft services such as Office 365 and AzureAD. This module has support for MFA and delegated access to client tenants.
 
+Currently, this module really only works on Windows as certain dependencies only work on Windows. For example, MFA authentication in the external modules such as the Exchange Online module only have Windows-based installs.
+
 ## DUST Cmdlets
 ### [Connect-AzureADv2](Connect-AzureADv2.md)
 {{Manually Enter Connect-AzureADv2 Description Here}}
@@ -21,7 +23,7 @@ DUST is a set of functions to ease administration and access to various Microsof
 {{Manually Enter Connect-ExchangeOnline Description Here}}
 
 ### [Connect-OnlineService](Connect-OnlineService.md)
-{{Manually Enter Connect-OnlineService Description Here}}
+Handles calling the proper connection handler for a given service.
 
 ### [Connect-SecurityAndComplianceCenter](Connect-SecurityAndComplianceCenter.md)
 {{Manually Enter Connect-SecurityAndComplianceCenter Description Here}}

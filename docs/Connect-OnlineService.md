@@ -27,14 +27,14 @@ Handles calling the proper connection handler for a given service.
 
 ## EXAMPLES
 
-### EXAMPLE 1
-```
-Connect-OnlineService ExchangeOnline
+### Connect to Exchange Online (Supports MFA)
+```powershell
+PS C:\> Connect-OnlineService ExchangeOnline
 ```
 
-### EXAMPLE 2
-```
-Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain fabrikam.com
+### Delegated connection to Exchange Online (Does not support MFA)
+```powershell
+PS C:\> Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain fabrikam.com
 ```
 
 ## PARAMETERS

@@ -101,15 +101,15 @@
     </maml:alertSet>
     <command:examples>
       <command:example>
-        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
-        <dev:code>Connect-OnlineService ExchangeOnline</dev:code>
+        <maml:title>---------- Connect to Exchange Online (Supports MFA) ----------</maml:title>
+        <dev:code>PS C:\&gt; Connect-OnlineService ExchangeOnline</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
-        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
-        <dev:code>Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain fabrikam.com</dev:code>
+        <maml:title>Delegated connection to Exchange Online (Does not support MFA)</maml:title>
+        <dev:code>PS C:\&gt; Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain fabrikam.com</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
