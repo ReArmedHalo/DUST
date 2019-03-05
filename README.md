@@ -1,2 +1,1 @@
-# DUST
-## Dustin's Utility and Scripting Toolkit
+DUST: Dustin's Utility and Scripting Toolkit
