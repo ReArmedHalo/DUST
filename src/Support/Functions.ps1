@@ -11,8 +11,8 @@
 Function Connect-OnlineService {
     [CmdletBinding(DefaultParameterSetName='Direct')]
     Param (
-        [Parameter(ParameterSetName='Direct',Mandatory=$true,Position=0)]
-        [Parameter(ParameterSetName='Delegated',Mandatory=$true,Position=0)]
+        [Parameter(ParameterSetName='Direct',Mandatory,Position=0)]
+        [Parameter(ParameterSetName='Delegated',Mandatory,Position=0)]
         [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service
     )

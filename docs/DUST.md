@@ -2,13 +2,13 @@
 Module Name: DUST
 Module Guid: de22eb37-a627-4e53-9ad5-cc373fe16dde
 Download Help Link: {{Please enter FwLink manually}}
-Help Version: {{Please enter version of help manually (X.X.X.X) format}}
+Help Version: 1.5.0
 Locale: en-US
 ---
 
 # DUST Module
 ## Description
-{{Manually Enter Description Here}}
+DUST is a set of functions to ease administration and access to various Microsoft services such as Office 365 and AzureAD. This module has support for MFA and delegated access to client tenants.
 
 ## DUST Cmdlets
 ### [Connect-AzureADv2](Connect-AzureADv2.md)
