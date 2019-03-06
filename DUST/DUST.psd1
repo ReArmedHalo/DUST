@@ -15,7 +15,7 @@ RootModule = 'DUST.psm1'
 ModuleVersion = '1.5.0'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+# CompatiblePSEditions = @('Desktop', 'Core')
 
 # ID used to uniquely identify this module
 GUID = 'de22eb37-a627-4e53-9ad5-cc373fe16dde'

@@ -45,7 +45,7 @@ Task Test -Depends Init  {
 
     # Gather test results. Store them in a variable and file
     $pesterParameters = @{
-        Path         = "$ProjectRoot\Tests"
+        Path         = "$ProjectRoot\tests"
         PassThru     = $true
         OutputFormat = "NUnitXml" 
         OutputFile   = "$ProjectRoot\$TestFile"
