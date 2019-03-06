@@ -1,3 +1,6 @@
+<#
+    .EXTERNALHELP ..\..\Find-AzureTenantIdByName-help.xml
+#>
 Function Find-AzureTenantIdByName {
     [cmdletbinding()] Param (
         [Parameter(Mandatory)]

@@ -1,3 +1,6 @@
+<#
+    .EXTERNALHELP ..\..\Connect-SecurityAndComplianceCenter-help.xml
+#>
 Function Connect-SecurityAndComplianceCenter {
     [CmdletBinding()] Param ()
     

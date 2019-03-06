@@ -1,12 +1,5 @@
 <#
-    .Synopsis
-    Establish a connection to Exchange Online
-    .DESCRIPTION
-    Handles delegated access and supports MFA access.
-    .EXAMPLE
-    Connect-ExchangeOnline
-    .EXAMPLE
-    Connect-ExchangeOnline -Delegated -ClientDomain fabrikam.com
+    .EXTERNALHELP ..\..\Connect-ExchangeOnline-help.xml
 #>
 Function Connect-ExchangeOnline {
     [CmdletBinding(DefaultParameterSetName='Direct')] Param (

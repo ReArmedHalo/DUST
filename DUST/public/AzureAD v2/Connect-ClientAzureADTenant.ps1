@@ -1,3 +1,6 @@
+<#
+    .EXTERNALHELP ..\..\Connect-ClientAzureADTenant-help.xml
+#>
 Function Connect-ClientAzureADTenant {
     [cmdletbinding()] Param (
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)]

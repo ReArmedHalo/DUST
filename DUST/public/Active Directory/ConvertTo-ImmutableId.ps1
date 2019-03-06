@@ -1,17 +1,5 @@
 <#
-    .Synopsis
-    Converts an Active Directory GUID to an Azure AD Immutable ID.
-    .DESCRIPTION
-    Given a single or multiple Active Directory user identity, will return the ImmutableId.
-    .EXAMPLE
-    ConvertTo-ImmutableId jdoe
-
-    ConvertTo-ImmutableId -UserGUID '00000000-0000-0000-0000-00000000000'
-    .EXAMPLE
-    Get-ADUser -Filter * -SearchBase 'OU=Finance,OU=UserAccounts,DC=FABRIKAM,DC=COM' | Convert-ToImmutableId
-
-    $guid = Get-AdUser -Identity jdoe | Select ObjectGUID
-    ConvertTo-ImmutableId -UserGUID $guid
+    .EXTERNALHELP ..\..\ConvertTo-ImmutableId-help.xml
 #>
 Function ConvertTo-ImmutableId {
     [cmdletbinding()]Param(

@@ -11,4 +11,4 @@ skip_commits:
 build: false
 
 test-script:
-  - ps: . .\build.ps1
+  - ps: . .\Build.ps1

@@ -1,5 +1,5 @@
 ---
-external help file: DUST-help.xml
+external help file: Disconnect-SecurityAndComplianceCenter-help.xml
 Module Name: DUST
 online version:
 schema: 2.0.0

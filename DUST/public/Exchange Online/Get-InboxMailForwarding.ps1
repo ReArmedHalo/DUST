@@ -1,3 +1,6 @@
+<#
+    .EXTERNALHELP ..\..\Get-InboxMailForwarding-help.xml
+#>
 Function Get-InboxMailForwarding {
     [CmdletBinding()] Param (
         [Parameter()]

@@ -1,3 +1,6 @@
+<#
+    .EXTERNALHELP ..\..\Disconnect-ExchangeOnline-help.xml
+#>
 Function Disconnect-ExchangeOnline {
     [CmdletBinding()] Param ()
     

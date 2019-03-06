@@ -72,7 +72,7 @@ Task Test -Depends Init  {
     "`n"
 }
 
-Task Build -Depends Test {
+Task Build -Depends Test,BuildExternalDocs {
     $lines
 
     # Load the module, read the exported functions, update the psd1 FunctionsToExport
@@ -117,4 +117,27 @@ Task Deploy -Depends Build {
         "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" +
         "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)"
     }
+}
+
+Task BuildExternalDocs -Depends Test {
+    $lines
+
+    try {
+        "Loading Module from $ENV:BHPSModuleManifest"
+        Remove-Module $ENV:BHProjectName -Force -ea SilentlyContinue
+        # platyPS + AppVeyor requires the module to be loaded in Global scope
+        Import-Module $ENV:BHPSModuleManifest -force -Global
+
+        $Params = @{
+            Path = "$ProjectRoot\docs"
+            Force = $true
+            OutputPath = "$ProjectRoot\$ENV:BHProjectName\en-US"
+        }
+        New-ExternalHelp @Params
+    }
+    catch {
+        Write-Error 'Failed to build external XML documentation from Markdown!'
+        "$_"
+    }
+    
 }

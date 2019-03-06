@@ -1,3 +1,6 @@
+<#
+    .EXTERNALHELP ..\..\Connect-AzureADv2-help.xml
+#>
 Function Connect-AzureADv2 {
     [CmdletBinding()] Param ()
     
