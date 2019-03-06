@@ -44,7 +44,7 @@ Function Resolve-Module
 
 Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
-Resolve-Module Psake, BuildHelpers, Pester
+Resolve-Module Psake, BuildHelpers, Pester, PlatyPS
 
 Set-BuildEnvironment 
 
