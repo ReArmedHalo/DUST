@@ -1,5 +1,5 @@
 ---
-external help file: DUST-help.xml
+external help file: Install-DUSTDependencies-help.xml
 Module Name: DUST
 online version: https://rearmedhalo.github.io/DUST/Install-DUSTDependencies.html
 schema: 2.0.0
