@@ -1,14 +1,14 @@
 ---
-external help file: DUST-help.xml
+external help file: Install-DUSTDependencies-help.xml
 Module Name: DUST
-online version:
+online version: https://rearmedhalo.github.io/DUST/Install-DUSTDependencies.html
 schema: 2.0.0
 ---
 
 # Install-DUSTDependencies
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Handles automatically installing all the required dependencies for the module. Must be ran under an administrative Powershell session.
 
 ## SYNTAX
 
@@ -17,18 +17,43 @@ Install-DUSTDependencies [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+This function handles the installation of the following:
+* [Exchange Online Remote PowerShell Module](https://docs.microsoft.com/en-us/powershell/exchange/exchange-online/connect-to-exchange-online-powershell/mfa-connect-to-exchange-online-powershell?view=exchange-ps)
+* [Microsoft Online Services Sign-In Assistant for IT Professionals RTW (64-bit)](https://www.microsoft.com/en-us/download/details.aspx?id=28177)
+* [Microsoft Online PowerShell Module](https://www.powershellgallery.com/packages/MSOnline)
+* [Microsoft Azure AD PowerShell Module](https://www.powershellgallery.com/packages/AzureAD/2.0.2.4)
 
 ## EXAMPLES
 
-### Example 1
+### Automatically Install All Dependencies
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Install-DUSTDependencies
 ```
 
-{{ Add example description here }}
+Checks if the session is running as an administrator and automatically downloads and installs all required modules.
+
+### Get a list of dependencies, with links, so you can manually install them
+```powershell
+PS C:\> Install-DUSTDependencies -ListOnly
+```
+
+Outputs a list of dependencies with links for manual installation
 
 ## PARAMETERS
+
+### -ListOnly
+
+```yaml
+Type: Switch
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
@@ -40,7 +65,8 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## OUTPUTS
 
-### System.Object
+### None
+
 ## NOTES
 
 ## RELATED LINKS

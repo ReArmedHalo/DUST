@@ -35,9 +35,3 @@ Function Connect-ExchangeOnline {
     }
     Import-Module (Import-PSSession $EXOSession -AllowClobber -DisableNameChecking) -DisableNameChecking -Global
 }
-
-Function Disconnect-ExchangeOnline {
-    [CmdletBinding()] Param ()
-    
-    Get-PSSession | Where-Object {$_.Name -like 'DUST-EXO'} | Remove-PSSession
-}
