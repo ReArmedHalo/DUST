@@ -105,9 +105,9 @@ Task Deploy -Depends Build {
     {
         $Params = @{
             Path = $ProjectRoot
+            Recurse = $false
             Force = $true
         }
-
         Invoke-PSDeploy @Verbose @Params
     }
     else
