@@ -5,7 +5,7 @@ if($ENV:BHProjectName -and $ENV:BHProjectName.Count -eq 1)
             FromSource $ENV:BHProjectName
             To PSGallery
             WithOptions @{
-                ApiKey = $ENV:NugetApiKey
+                ApiKey = $ENV:NuGetApiKey
             }
         }
     }
