@@ -12,7 +12,7 @@
 RootModule = 'DUST.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.5.4'
+ModuleVersion = '1.5.8'
 
 # Supported PSEditions
 # CompatiblePSEditions = @('Desktop', 'Core')
