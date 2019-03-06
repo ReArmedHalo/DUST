@@ -18,7 +18,7 @@
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>ListOnly</maml:name>
           <maml:Description>
-            <maml:para></maml:para>
+            <maml:para>Outputs a list of dependencies with links for manual installation</maml:para>
           </maml:Description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
@@ -32,7 +32,7 @@
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>ListOnly</maml:name>
         <maml:Description>
-          <maml:para></maml:para>
+          <maml:para>Outputs a list of dependencies with links for manual installation</maml:para>
         </maml:Description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>

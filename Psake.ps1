@@ -39,7 +39,7 @@ Task Init {
     "`n"
 }
 
-Task Test -Depends Init  {
+Task Test -Depends Init, BuildExternalDocs  {
     $lines
     "`n`tSTATUS: Testing with PowerShell $PSVersion"
 
@@ -119,7 +119,7 @@ Task Deploy -Depends Build {
     }
 }
 
-Task BuildExternalDocs -Depends Test {
+Task BuildExternalDocs {
     $lines
 
     try {
@@ -132,6 +132,7 @@ Task BuildExternalDocs -Depends Test {
             Path = "$ProjectRoot\docs"
             Force = $true
             OutputPath = "$ProjectRoot\$ENV:BHProjectName\en-US"
+            ErrorAction = 'Stop'
         }
         New-ExternalHelp @Params
     }

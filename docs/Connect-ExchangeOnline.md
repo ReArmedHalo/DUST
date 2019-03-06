@@ -1,7 +1,7 @@
 ---
 external help file: Connect-ExchangeOnline-help.xml
 Module Name: DUST
-online version:
+online version: https://rearmedhalo.github.io/DUST/Connect-ExchangeOnline.html
 schema: 2.0.0
 ---
 

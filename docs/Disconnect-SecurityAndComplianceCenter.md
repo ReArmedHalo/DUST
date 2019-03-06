@@ -1,7 +1,7 @@
 ---
 external help file: Disconnect-SecurityAndComplianceCenter-help.xml
 Module Name: DUST
-online version:
+online version: https://rearmedhalo.github.io/DUST/Disconnect-SecurityAndComplianceCenter.html
 schema: 2.0.0
 ---
 

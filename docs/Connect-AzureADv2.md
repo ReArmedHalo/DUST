@@ -1,7 +1,7 @@
 ---
 external help file: Connect-AzureADv2-help.xml
 Module Name: DUST
-online version:
+online version: https://rearmedhalo.github.io/DUST/Connect-AzureADv2.html
 schema: 2.0.0
 ---
 

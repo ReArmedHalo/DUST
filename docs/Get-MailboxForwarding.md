@@ -1,7 +1,7 @@
 ---
 external help file: Get-MailboxForwarding-help.xml
 Module Name: DUST
-online version:
+online version: https://rearmedhalo.github.io/DUST/Get-MailboxForwarding.html
 schema: 2.0.0
 ---
 

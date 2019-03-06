@@ -1,7 +1,7 @@
 ---
 external help file: Find-AzureTenantIdByName-help.xml
 Module Name: DUST
-online version:
+online version: https://rearmedhalo.github.io/DUST/Find-AzureTenantIdByName.html
 schema: 2.0.0
 ---
 

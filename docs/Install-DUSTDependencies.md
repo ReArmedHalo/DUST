@@ -42,6 +42,7 @@ Outputs a list of dependencies with links for manual installation
 ## PARAMETERS
 
 ### -ListOnly
+Outputs a list of dependencies with links for manual installation
 
 ```yaml
 Type: Switch
