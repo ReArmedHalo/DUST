@@ -100,7 +100,6 @@ Task Deploy -Depends Build {
     if(
         $env:BHPSModulePath -and
         $ENV:BHBuildSystem -ne 'Unknown' -and
-        $ENV:BHBranchName -eq "master" -and
         $ENV:BHCommitMessage -match '!deploy'
     )
     {
