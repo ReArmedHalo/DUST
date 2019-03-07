@@ -46,7 +46,7 @@ Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
 Resolve-Module Psake, BuildHelpers, Pester, PlatyPS, PSDeploy
 
-Set-BuildEnvironment 
+Set-BuildEnvironment -Force
 
 Invoke-psake -buildFile .\psake.ps1 -taskList $Task -nologo
 
