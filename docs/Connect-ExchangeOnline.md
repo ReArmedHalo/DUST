@@ -23,54 +23,24 @@ Connect-ExchangeOnline [-Delegated] [-ClientDomain] <String> [-Credential] <PSCr
 ```
 
 ## DESCRIPTION
-Handles delegated access and supports MFA access.
+Handles delegated access and supports MFA access (only with direct connection)
 
 ## EXAMPLES
 
-### EXAMPLE 1
+### Direct Connection
 ```
 Connect-ExchangeOnline
 ```
 
-### EXAMPLE 2
+### Delegated Access
 ```
 Connect-ExchangeOnline -Delegated -ClientDomain fabrikam.com
 ```
 
 ## PARAMETERS
 
-### -ClientDomain
-{{Fill ClientDomain Description}}
-
-```yaml
-Type: String
-Parameter Sets: Delegated
-Aliases:
-
-Required: True
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Credential
-{{Fill Credential Description}}
-
-```yaml
-Type: PSCredential
-Parameter Sets: Delegated
-Aliases:
-
-Required: True
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Delegated
-{{Fill Delegated Description}}
+Inform the function that you wish to connect via delegated credentials
 
 ```yaml
 Type: SwitchParameter
@@ -92,6 +62,36 @@ Aliases:
 Required: True
 Position: 1
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ClientDomain
+Primary SMTP address or onmicrosoft.com tenant address of the Exchange Online tenant that you wish to connect to.
+
+```yaml
+Type: String
+Parameter Sets: Delegated
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Credential
+PSCredential object for delegated access
+
+```yaml
+Type: PSCredential
+Parameter Sets: Delegated
+Aliases:
+
+Required: True
+Position: 3
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
