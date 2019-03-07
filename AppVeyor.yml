@@ -6,7 +6,7 @@ environment:
 os: WMF 5
 
 skip_commits:
-  message: /updated readme.*|update readme.*|updating readme.*s/
+  message: /updated readme.*|update readme.*s/
 
 build: false
 
