@@ -97,7 +97,6 @@ Task Deploy -Depends Build {
     $lines
 
     # Gate deployment
-    Write-Host "SECURE VALUE HERE $ENV:NuGetApiKey"
     if(
         $env:BHPSModulePath -and
         $ENV:BHBuildSystem -ne 'Unknown' -and
