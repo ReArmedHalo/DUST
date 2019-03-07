@@ -8,7 +8,7 @@ schema: 2.0.0
 # Connect-AzureADv2
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Mostly here just so we can handle connecting via our own connection handler to AzureAD for Connect-OnlineService
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Connect-AzureADv2 [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+We have a seperate handler for connecting to a client's Azure tenant currently so this mostly just serves as a wrapper to Connect-AzureAD from the AzureAD module.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Connect-AzureADv2
 ```
 
-{{ Add example description here }}
+Supports MFA and prompts for valid Azure credentials
 
 ## PARAMETERS
 
@@ -40,7 +40,8 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## OUTPUTS
 
-### System.Object
+### None
+
 ## NOTES
 
 ## RELATED LINKS

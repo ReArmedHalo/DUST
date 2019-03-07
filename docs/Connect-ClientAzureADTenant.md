@@ -8,7 +8,7 @@ schema: 2.0.0
 # Connect-ClientAzureADTenant
 
 ## SYNOPSIS
-{{Fill in the Synopsis}}
+Given a valid Azure Tenant ID, will connect via delegated rights to that tenant
 
 ## SYNTAX
 
@@ -17,21 +17,29 @@ Connect-ClientAzureADTenant [-TenantId] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{Fill in the Description}}
+Supports MFA - Given a valid Azure Tenant ID, will connect via delegated rights to that tenant
 
 ## EXAMPLES
 
-### Example 1
+### Connecting with a Tenant ID
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Connect-ClientAzureADTenant 00000000-0000-0000-0000-000000000000
 ```
 
-{{ Add example description here }}
+If you have a valid Tenant ID, you can enter it in to connect directly.
+
+### Searching and Connecting
+```powershell
+PS C:\> Find-AzureTenantIdByName "contoso" | Connect-ClientAzureADTenant
+```
+
+Requires first connecting to your tenant that has a partner relationship with the target tenant.
 
 ## PARAMETERS
 
 ### -TenantId
-{{Fill TenantId Description}}
+
+CustomerContextId that you can find by searching Azure AD using Find-AzureTenantIdByName
 
 ```yaml
 Type: String
@@ -55,7 +63,10 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## OUTPUTS
 
-### System.Object
+### None
+
 ## NOTES
 
 ## RELATED LINKS
+[Find-AzureTenantIdByName](https://rearmedhalo.github.io/DUST/Find-AzureTenantIdByName.html)
+[Get-AzureADContract](https://docs.microsoft.com/en-us/powershell/module/azuread/get-azureadcontact)
