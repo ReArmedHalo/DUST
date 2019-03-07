@@ -1,5 +1,5 @@
-Write-Host "Branch Name: $ENV:BHBranchName"
-Write-Host "Test Secure String: $ENV:NuGetApiKey"
+Write-Host "Get-ChildItems"
+Get-ChildItem env:
 
 Deploy Module {
     By PSGalleryModule {
