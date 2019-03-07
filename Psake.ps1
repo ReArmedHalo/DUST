@@ -39,7 +39,7 @@ Task Init {
     "`n"
 }
 
-Task Test -Depends Init, BuildExternalDocs  {
+Task Test -Depends Init  {
     $lines
     "`n`tSTATUS: Testing with PowerShell $PSVersion"
 
