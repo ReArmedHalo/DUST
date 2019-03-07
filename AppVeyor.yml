@@ -1,6 +1,6 @@
 environment:
   NuGetApiKey:
-    secure: w6ByYlL09UawyqLUgynpzA==
+    secure: C8lr2mm4fyrXiqkYDZAVosF/1Ufy2hZxQvNaqehHn3zLiN3SXs/gHXzLiPoOByA
 
 # Allow WMF5 (i.e. PowerShellGallery functionality)
 os: WMF 5
@@ -10,5 +10,5 @@ skip_commits:
 
 build: false
 
-test-script:
-  - ps: . .\Build.ps1
+test_script:
+  - ps: Build.ps1
