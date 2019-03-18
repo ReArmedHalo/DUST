@@ -19,3 +19,17 @@ To install without administrative rights
 
 ```powershell
 Install-Module -Name DUST -Scope CurrentUser
+```
+
+## Dependencies
+DUST includes a function to handle automatic remediation for dependencies that are required by certain functions. You can have DUST handle this automatically if you run the below command via an elevated adminitrative PowerShell session.
+
+```powershell
+Install-DUSTDependencies
+```
+
+Optionally, if you don't want to have DUST do this automatically:
+
+```powershell
+Install-DUSTDependencies -ListOnly
+```
