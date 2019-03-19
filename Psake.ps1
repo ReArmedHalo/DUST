@@ -126,7 +126,7 @@ Task BuildDocs -Depends Init {
         Path = $ProjectRoot
         Recurse = $false
         Force = $true
-        Tags = docs
+        Tags = 'docs'
     }
     Invoke-PSDeploy @Verbose @Params
 }
