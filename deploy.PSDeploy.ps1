@@ -6,4 +6,12 @@ Deploy Module {
             ApiKey = $ENV:NuGetApiKey
         }
     }
+
+    By PlatyPS {
+        FromSource 'docs'
+        To "$($ENV:BHModulePath)\en-US"
+        WithOptions @{
+            Force = $true
+        }
+    }
 }
