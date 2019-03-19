@@ -3,7 +3,7 @@ Deploy Module {
         FromSource $ENV:BHModulePath
         To PSGallery
         WithOptions @{
-            NuGetApiKey = $ENV:NuGetApiKey
+            ApiKey = $ENV:NuGetApiKey
         }
     }
 }
