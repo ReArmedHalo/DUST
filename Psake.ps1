@@ -39,7 +39,7 @@ Task Init {
     "`n"
 }
 
-Task Test -Depends Init  {
+Task Test -Depends Init, BuildDocs  {
     $lines
     "`n`tSTATUS: Testing with PowerShell $PSVersion"
 
@@ -117,4 +117,16 @@ Task Deploy -Depends Build {
         "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" +
         "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)"
     }
+}
+
+Task BuildDocs -Depends Init {
+    $lines
+
+    $Params = @{
+        Path = $ProjectRoot
+        Recurse = $false
+        Force = $true
+        Tags = docs
+    }
+    Invoke-PSDeploy @Verbose @Params
 }
