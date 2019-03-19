@@ -6,13 +6,10 @@ environment:
     secure: C8lr2mm4fyrXiqkYDZAVosF/1Ufy2hZxQvNaqehHn3zLiN3SXs/gHXzLiPoOByA
 >>>>>>> Restoring AppVeyor NuGetApiKey secure variable
 
-# Allow WMF5 (i.e. PowerShellGallery functionality)
-os: WMF 5
-
 skip_commits:
   message: /updated readme.*|update readme.*s/
 
-build: false
+image: WMF 5
 
 test_script:
-  - ps: .\Build.ps1
+  - ps: ./build.ps1
