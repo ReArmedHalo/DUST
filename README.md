@@ -1,5 +1,5 @@
-| AppVeyor | PowerShell Gallery |
-|----------|--------------------|
+| AppVeyor (Master) | PowerShell Gallery |
+|-------------------|--------------------|
 |[![Build status](https://ci.appveyor.com/api/projects/status/xoa5igrgu1hc65ik?svg=true)](https://ci.appveyor.com/project/ReArmedHalo/dust) | [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/DUST.svg?style=flat-square&label=DUST)](https://powershellgallery.com/packages/DUST) [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/DUST.svg)](https://powershellgallery.com/packages/DUST) |
 
 
