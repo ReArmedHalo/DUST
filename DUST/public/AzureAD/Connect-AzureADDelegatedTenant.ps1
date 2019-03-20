@@ -8,7 +8,7 @@ Function Connect-AzureADDelegatedTenant {
         [String] $TenantId
     )
 
-    if (Test-IsConnectedToService 'AzureADv2' -ErrorAction SilentlyContinue) {
+    if (Test-IsConnectedToService 'AzureAD' -ErrorAction SilentlyContinue) {
         Disconnect-AzureAD
     }
 

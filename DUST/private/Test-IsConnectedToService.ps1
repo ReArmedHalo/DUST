@@ -1,22 +1,22 @@
 Function Test-IsConnectedToService {
     [CmdletBinding()] Param (
-        [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
+        [ValidateSet('MsolService','AzureAD','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service
     )
 
     switch ($Service) {
-        'MicrosoftOnline' {
+        'MsolService' {
             try {
                 Get-MsolCompanyInformation
             } catch [Microsoft.Online.Administration.Automation.MicrosoftOnlineException] {
-                Write-Error 'Not connected to Microsoft Online! Please run ''Connect-OnlineService MicrosoftOnline'' before using this command.'
+                Write-Error 'Not connected to Microsoft Online! Please run ''Connect-OnlineService MsolService'' before using this command.'
             }
         }
-        'AzureADv2' {
+        'AzureAD' {
             try {
                 Get-AzureADTenantDetail
             } catch [Microsoft.Open.Azure.AD.CommonLibrary.AadNeedAuthenticationException] {
-                Write-Error 'Not connected to Azure AD! Please run ''Connect-OnlineService AzureADv2'' before using this command.'
+                Write-Error 'Not connected to Azure AD! Please run ''Connect-OnlineService AzureAD'' before using this command.'
             }
         }
         'ExchangeOnline' {

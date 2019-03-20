@@ -6,14 +6,15 @@ Function Connect-OnlineService {
     Param (
         [Parameter(ParameterSetName='Direct',Mandatory,Position=0)]
         [Parameter(ParameterSetName='Delegated',Mandatory,Position=0)]
-        [ValidateSet('MsolService','AzureAD','ExchangeOnline','SecurityAndComplianceCenter')]
+        [ValidateSet('AzureAD','ExchangeOnline','MsolService','SecurityAndComplianceCenter')]
         [String] $Service
     )
 
     DynamicParam {
-        $services = @('ExchangeOnline')
+        # Services that support delegated access
+        $delegatableServices = @('AzureAD','ExchangeOnline')
 
-        if ($services -contains $Service) {
+        if ($delegatableServices -contains $Service) {
             # Delegated attribute
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $delegatedAttribute = New-Object System.Management.Automation.ParameterAttribute
@@ -23,7 +24,9 @@ Function Connect-OnlineService {
             $attributeCollection.Add($delegatedAttribute)
             $delegatedParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Delegated', [Switch], $attributeCollection)
             $RuntimeParameterDictionary.Add('Delegated', $delegatedParam)
+        }
 
+        if ($Service -eq 'ExchangeOnline') {
             # ClientDomain attribute
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $clientDomainAttribute = New-Object System.Management.Automation.ParameterAttribute
@@ -33,25 +36,45 @@ Function Connect-OnlineService {
             $attributeCollection.Add($clientDomainAttribute)
             $clientDomainParam = New-Object System.Management.Automation.RuntimeDefinedParameter('ClientDomain', [String], $attributeCollection)
             $RuntimeParameterDictionary.Add('ClientDomain', $clientDomainParam)
-
-            # Credential
-            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $credentialAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $credentialAttribute.Position = 3
-            $credentialAttribute.ParameterSetName = "Delegated"
-            $credentialAttribute.Mandatory = $true
-            $attributeCollection.Add($credentialAttribute)
-            $credentialParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Credential', [PSCredential], $attributeCollection)
-            $RuntimeParameterDictionary.Add('Credential', $credentialParam)
-
-            return $RuntimeParameterDictionary
         }
+
+        if ($service -eq 'AzureAD') {
+            # TenantId attribute
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $tenantIdAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $tenantIdAttribute.Position = 2
+            $tenantIdAttribute.ParameterSetName = 'Delegated'
+            $tenantIdAttribute.Mandatory = $true
+            $tenantIdAttribute.ValueFromPipelineByPropertyName = $true
+            $parameterAlias = New-Object System.Management.Automation.AliasAttribute -ArgumentList 'CustomerContextId'
+            $attributeCollection.Add($tenantIdAttribute)
+            $attributeCollection.Add($parameterAlias)
+            $tenantIdParam = New-Object System.Management.Automation.RuntimeDefinedParameter('TenantId', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('TenantId', $tenantIdParam)
+        }
+
+        # Credential
+        $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+        $credentialAttribute = New-Object System.Management.Automation.ParameterAttribute
+        $credentialAttribute.Position = 3
+        $credentialAttribute.ParameterSetName = "Delegated"
+        $credentialAttribute.Mandatory = $true
+        $attributeCollection.Add($credentialAttribute)
+        $credentialParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Credential', [PSCredential], $attributeCollection)
+        $RuntimeParameterDictionary.Add('Credential', $credentialParam)
+
+        return $RuntimeParameterDictionary
     }
 
     Process {
         if ($PSBoundParameters.Delegated) {
-            $cmd = Get-Command "Connect-$Service"
-            & $cmd -Delegated -ClientDomain ($PSBoundParameters.ClientDomain) -Credential ($PSBoundParameters.Credential)
+            if ($Service -eq 'AzureAD') {
+                # Azure AD has a different method of handling delegated access, this one supports MFA!
+                Connect-AzureAD -TenantId $PSBoundParameters.TenantId
+            } else {
+                $cmd = Get-Command "Connect-$Service"
+                & $cmd -Delegated -ClientDomain ($PSBoundParameters.ClientDomain) -Credential ($PSBoundParameters.Credential)
+            }
         } else {
             & (Get-Command "Connect-$Service")
         }

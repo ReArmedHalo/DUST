@@ -7,7 +7,7 @@ Function Find-AzureTenantIdByName {
         [String] $DisplayName
     )
     
-    if (Test-IsConnectedToService 'AzureADv2') {
+    if (Test-IsConnectedToService 'AzureAD') {
         Get-AzureADContract -All:$true | Where-Object {$_.DisplayName -Match $DisplayName}
     }
 }

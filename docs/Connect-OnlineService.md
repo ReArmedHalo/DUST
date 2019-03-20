@@ -44,6 +44,8 @@ Defines the service that you wish to connect to. Accepts: `MicrosoftOnline`, `Az
 
 If you specify `SecurityAndComplianceCenter`, then `-Delegated` and `-ClientDomain` are not supported as Microsoft does not currently support delegated access to the Security and Compliance Center.
 
+AzureAD and MsolService do not support delegation using the paramters this function supports at this time
+
 ```yaml
 Type: String
 Parameter Sets: (All)
