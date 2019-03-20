@@ -1,11 +1,11 @@
 ---
-external help file: Connect-ClientAzureADTenant-help.xml
+external help file: Connect-AzureADDelegatedTenant-help.xml
 Module Name: DUST
-online version: https://rearmedhalo.github.io/DUST/Connect-ClientAzureADTenant.html
+online version: https://rearmedhalo.github.io/DUST/Connect-AzureADDelegatedTenant.html
 schema: 2.0.0
 ---
 
-# Connect-ClientAzureADTenant
+# Connect-AzureADDelegatedTenant
 
 ## SYNOPSIS
 Given a valid Azure Tenant ID, will connect via delegated rights to that tenant
@@ -13,7 +13,7 @@ Given a valid Azure Tenant ID, will connect via delegated rights to that tenant
 ## SYNTAX
 
 ```
-Connect-ClientAzureADTenant [-TenantId] <String> [<CommonParameters>]
+Connect-AzureADDelegatedTenant [-TenantId] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -23,14 +23,14 @@ Supports MFA - Given a valid Azure Tenant ID, will connect via delegated rights 
 
 ### Connecting with a Tenant ID
 ```powershell
-PS C:\> Connect-ClientAzureADTenant 00000000-0000-0000-0000-000000000000
+PS C:\> Connect-AzureADDelegatedTenant 00000000-0000-0000-0000-000000000000
 ```
 
 If you have a valid Tenant ID, you can enter it in to connect directly.
 
 ### Searching and Connecting
 ```powershell
-PS C:\> Find-AzureTenantIdByName "contoso" | Connect-ClientAzureADTenant
+PS C:\> Find-AzureTenantIdByName "contoso" | Connect-AzureADDelegatedTenant
 ```
 
 Requires first connecting to your tenant that has a partner relationship with the target tenant.

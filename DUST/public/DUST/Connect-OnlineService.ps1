@@ -6,12 +6,12 @@ Function Connect-OnlineService {
     Param (
         [Parameter(ParameterSetName='Direct',Mandatory,Position=0)]
         [Parameter(ParameterSetName='Delegated',Mandatory,Position=0)]
-        [ValidateSet('MicrosoftOnline','AzureADv2','ExchangeOnline','SecurityAndComplianceCenter')]
+        [ValidateSet('MsolService','AzureAD','ExchangeOnline','SecurityAndComplianceCenter')]
         [String] $Service
     )
 
     DynamicParam {
-        $services = @('MicrosoftOnline','AzureADv2','ExchangeOnline')
+        $services = @('ExchangeOnline')
 
         if ($services -contains $Service) {
             # Delegated attribute

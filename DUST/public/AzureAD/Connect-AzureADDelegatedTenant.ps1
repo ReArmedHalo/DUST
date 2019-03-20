@@ -1,7 +1,7 @@
 <#
-    .EXTERNALHELP ..\..\Connect-ClientAzureADTenant-help.xml
+    .EXTERNALHELP ..\..\Connect-AzureADDelegatedTenant-help.xml
 #>
-Function Connect-ClientAzureADTenant {
+Function Connect-AzureADDelegatedTenant {
     [cmdletbinding()] Param (
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
         [Alias('CustomerContextId')]
