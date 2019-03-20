@@ -35,6 +35,7 @@ Task Init {
     $lines
     Set-Location $ProjectRoot
     "Build System Details:"
+    write-host "foo variable: $env:foo"
     Get-Item ENV:BH*
     "`n"
 }

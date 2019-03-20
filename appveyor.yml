@@ -1,0 +1,13 @@
+environment:
+  testvar:
+    secure: 4rIhhL3hKGn3+sF+9RKzdbnWlqmJ8sGtsyLuGksehNw=
+
+skip_commits:
+  message: /updated readme.*|update readme.*s/
+
+os: WMF 5
+
+build: false
+
+test_script:
+  - ps: ./build.ps1
