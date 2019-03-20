@@ -1,4 +1,7 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/xoa5igrgu1hc65ik?svg=true)](https://ci.appveyor.com/project/ReArmedHalo/dust)
+| AppVeyor | PowerShell Gallery |
+|----------|--------------------|
+|[![Build status](https://ci.appveyor.com/api/projects/status/xoa5igrgu1hc65ik?svg=true)](https://ci.appveyor.com/project/ReArmedHalo/dust) | [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/DUST.svg?style=flat-square&label=DUST)](https://powershellgallery.com/packages/DUST) [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/DUST.svg)](https://powershellgallery.com/packages/DUST) |
+
 
 # DUST - Dustin's Utility and Scripting Toolkit
 
@@ -19,3 +22,17 @@ To install without administrative rights
 
 ```powershell
 Install-Module -Name DUST -Scope CurrentUser
+```
+
+## Dependencies
+DUST includes a function to handle automatic remediation for dependencies that are required by certain functions. You can have DUST handle this automatically if you run the below command via an elevated adminitrative PowerShell session.
+
+```powershell
+Install-DUSTDependencies
+```
+
+Optionally, if you don't want to have DUST do this automatically:
+
+```powershell
+Install-DUSTDependencies -ListOnly
+```
