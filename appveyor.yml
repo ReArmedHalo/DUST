@@ -4,6 +4,8 @@ image: WMF 5
 environment:
   NuGetApiKey:
     secure: +0k/7Pu/LMQofUKv3ZjNeV8kMqZBkNSRlpUVx3IWgr6EfA0O0ELe3XZAj0Pe8LPk
+  foo:
+    secure: El753OWnOhxfRFRaPzwX4Q==
 build: off
 test_script:
 - ps: .\build.ps1
