@@ -1,17 +1,9 @@
-environment:
-  NuGetApiKey:
-<<<<<<< develop
-    secure: 0C8lr2mm4fyrXiqkYDZAVosF/1Ufy2hZxQvNaqehHn3zLiN3SXs/gHXzLiPoOByA
-=======
-    secure: C8lr2mm4fyrXiqkYDZAVosF/1Ufy2hZxQvNaqehHn3zLiN3SXs/gHXzLiPoOByA
->>>>>>> Restoring AppVeyor NuGetApiKey secure variable
-
 skip_commits:
   message: /updated readme.*|update readme.*s/
-
-os: WMF 5
-
-build: false
-
+image: WMF 5
+environment:
+  NuGetApiKey:
+    secure: +0k/7Pu/LMQofUKv3ZjNeV8kMqZBkNSRlpUVx3IWgr6EfA0O0ELe3XZAj0Pe8LPk
+build: off
 test_script:
-  - ps: ./build.ps1
+- ps: .\build.ps1
