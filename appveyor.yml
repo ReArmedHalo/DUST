@@ -7,3 +7,11 @@ environment:
 build: off
 test_script:
 - ps: .\build.ps1
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+  publish_wap_octopus: false
+notifications:
+  - provider: Slack
+    incoming_webhook: https://hooks.slack.com/services/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
