@@ -1,4 +1,4 @@
-<# 
+<#
 .EXTERNALHELP ..\..\Connect-OnlineService-help.xml
 #>
 Function Connect-OnlineService {

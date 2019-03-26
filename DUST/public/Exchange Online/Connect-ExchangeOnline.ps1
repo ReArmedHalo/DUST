@@ -8,7 +8,7 @@ Function Connect-ExchangeOnline {
         [Switch] $Delegated,
 
         [Parameter(ParameterSetName='Delegated',Mandatory,Position=1)]
-        [String] $ClientDomain, 
+        [String] $ClientDomain,
 
         [Parameter(ParameterSetName='Delegated',Mandatory,Position=2)]
         [PSCredential] $Credential

@@ -2,6 +2,7 @@
     .EXTERNALHELP ..\..\ConvertTo-ImmutableId-help.xml
 #>
 Function ConvertTo-ImmutableId {
+    [OutputType([System.String])]
     [cmdletbinding()]Param(
         [Parameter(ParameterSetName='FromADIdentity',Mandatory,Position=1,ValueFromPipeline)]
         [String] $Identity,
@@ -25,7 +26,7 @@ Function ConvertTo-ImmutableId {
                 $item = New-Object PSObject
                 $item | Add-Member -type NoteProperty -Name 'UserPrincipalName' -Value $upn
                 $item | Add-Member -type NoteProperty -Name 'ImmutableId' -Value $immutableId
-                
+
                 $row += $item
                 return $row
             }

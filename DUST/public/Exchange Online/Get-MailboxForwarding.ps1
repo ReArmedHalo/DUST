@@ -2,6 +2,7 @@
     .EXTERNALHELP ..\..\Get-MailboxForwarding-help.xml
 #>
 Function Get-MailboxForwarding {
+    [OutputData([System.Object[]])]
     [CmdletBinding()] Param (
         [Parameter()]
         [String] $UserPrincipalName
