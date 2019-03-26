@@ -34,7 +34,7 @@ if (
             FromSource $ENV:BHModulePath
             To AppVeyor
             WithOptions @{
-                Version = $env:BHBuildNumber
+                Version = $env:APPVEYOR_BUILD_VERSION
             }
         }
     }
