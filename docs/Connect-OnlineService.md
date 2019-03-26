@@ -13,12 +13,12 @@ Facade to individual connection handlers
 ## SYNTAX
 
 ### Direct (Default)
-```
+```powershell
 Connect-OnlineService [-Service] <String> [<CommonParameters>]
 ```
 
 ### Delegated
-```
+```powershell
 Connect-OnlineService [-Service] <String> [-Delegated] <Switch> [-ClientDomain] <String> [<CommonParameters>]
 ```
 
@@ -27,18 +27,21 @@ Handles calling the proper connection handler for a given service.
 
 The following services support delegated access:
 - AzureAD (Supports MFA via delegation)
-- - `Connect-OnlineService -Service AzureAD -Delegated -TenantId {TenantId}`
 - ExchangeOnline (Does not support MFA)
-- - `Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain {Verified domain}`
 
 ## EXAMPLES
+
+### Connect to AzureAD via Delegation (Supports MFA)
+```powershell
+PS C:\> Connect-OnlineService AzureAD -Delegated -TenantId 00000000-0000-0000-0000-000000000000
+```
 
 ### Connect to Exchange Online (Supports MFA)
 ```powershell
 PS C:\> Connect-OnlineService ExchangeOnline
 ```
 
-### Delegated connection to Exchange Online (Does not support MFA)
+### Connect to Exchange Online via Delegation (Does not support MFA)
 ```powershell
 PS C:\> Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain fabrikam.com
 ```

@@ -97,27 +97,13 @@ Task Build -Depends Test {
 Task Deploy -Depends Build {
     $lines
 
-    # Gate deployment
+    $Params = @{
+        Path = $ProjectRoot
+        Recurse = $false
+        Force = $true
+    }
 
-    if(
-        $env:BHPSModulePath -and
-        $ENV:BHBuildSystem -ne 'Unknown' -and
-        $ENV:BHCommitMessage -match '!deploy'
-    )
-    {
-        $Params = @{
-            Path = $ProjectRoot
-            Recurse = $false
-            Force = $true
-        }
-        Invoke-PSDeploy @Verbose @Params
-    }
-    else
-    {
-        "Skipping deployment: To deploy, ensure that...`n" +
-        "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" +
-        "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)"
-    }
+    Invoke-PSDeploy @Verbose @Params
 }
 
 Task BuildDocs -Depends Init {
