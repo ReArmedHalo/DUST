@@ -11,10 +11,8 @@ Function Connect-OnlineService {
     )
 
     DynamicParam {
-        # Services that support delegated access
-        $delegatableServices = @('AzureAD','ExchangeOnline')
-
-        if ($delegatableServices -contains $Service) {
+        # --- AzureAD
+        if ($Service -eq 'AzureAD') {
             # Delegated attribute
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $delegatedAttribute = New-Object System.Management.Automation.ParameterAttribute
@@ -24,21 +22,7 @@ Function Connect-OnlineService {
             $attributeCollection.Add($delegatedAttribute)
             $delegatedParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Delegated', [Switch], $attributeCollection)
             $RuntimeParameterDictionary.Add('Delegated', $delegatedParam)
-        }
 
-        if ($Service -eq 'ExchangeOnline') {
-            # ClientDomain attribute
-            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $clientDomainAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $clientDomainAttribute.Position = 2
-            $clientDomainAttribute.ParameterSetName = 'Delegated'
-            $clientDomainAttribute.Mandatory = $true
-            $attributeCollection.Add($clientDomainAttribute)
-            $clientDomainParam = New-Object System.Management.Automation.RuntimeDefinedParameter('ClientDomain', [String], $attributeCollection)
-            $RuntimeParameterDictionary.Add('ClientDomain', $clientDomainParam)
-        }
-
-        if ($service -eq 'AzureAD') {
             # TenantId attribute
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $tenantIdAttribute = New-Object System.Management.Automation.ParameterAttribute
@@ -53,7 +37,37 @@ Function Connect-OnlineService {
             $RuntimeParameterDictionary.Add('TenantId', $tenantIdParam)
         }
 
+        # --- ExchangeOnline
+        if ($Service -eq 'ExchangeOnline') {
+            # Delegated
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $delegatedAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $delegatedAttribute.Position = 1
+            $delegatedAttribute.ParameterSetName = 'Delegated'
+            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+            $attributeCollection.Add($delegatedAttribute)
+            $delegatedParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Delegated', [Switch], $attributeCollection)
+            $RuntimeParameterDictionary.Add('Delegated', $delegatedParam)
+
+            # ClientDomain
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $clientDomainAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $clientDomainAttribute.Position = 2
+            $clientDomainAttribute.ParameterSetName = 'Delegated'
+            $clientDomainAttribute.Mandatory = $true
+            $attributeCollection.Add($clientDomainAttribute)
+            $clientDomainParam = New-Object System.Management.Automation.RuntimeDefinedParameter('ClientDomain', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('ClientDomain', $clientDomainParam)
+        }
+
+        # --- MsolService
+        # We are not supporting MsolService at this time for delegation
+
+        # --- SecurityAndComplianceCenter
+        # Delegation not supported by SCC
+
         # Credential
+        <#
         $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $credentialAttribute = New-Object System.Management.Automation.ParameterAttribute
         $credentialAttribute.Position = 3
@@ -62,8 +76,11 @@ Function Connect-OnlineService {
         $attributeCollection.Add($credentialAttribute)
         $credentialParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Credential', [PSCredential], $attributeCollection)
         $RuntimeParameterDictionary.Add('Credential', $credentialParam)
+        #>
 
-        return $RuntimeParameterDictionary
+        if ($RuntimeParameterDictionary) {
+            return $RuntimeParameterDictionary
+        }
     }
 
     Process {

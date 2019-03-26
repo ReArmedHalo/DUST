@@ -25,6 +25,12 @@ Connect-OnlineService [-Service] <String> [-Delegated] <Switch> [-ClientDomain] 
 ## DESCRIPTION
 Handles calling the proper connection handler for a given service.
 
+The following services support delegated access:
+- AzureAD (Supports MFA via delegation)
+- - `Connect-OnlineService -Service AzureAD -Delegated -TenantId {TenantId}`
+- ExchangeOnline (Does not support MFA)
+- - `Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain {Verified domain}`
+
 ## EXAMPLES
 
 ### Connect to Exchange Online (Supports MFA)
@@ -40,11 +46,9 @@ PS C:\> Connect-OnlineService -Service ExchangeOnline -Delegated -ClientDomain f
 ## PARAMETERS
 
 ### -Service
-Defines the service that you wish to connect to. Accepts: `MicrosoftOnline`, `AzureADv2`, `ExchangeOnline`, `SecurityAndComplianceCenter`.
+Defines the service that you wish to connect to. Accepts: `AzureAD`, `ExchangeOnline`, `MsolService`, `SecurityAndComplianceCenter`.
 
-If you specify `SecurityAndComplianceCenter`, then `-Delegated` and `-ClientDomain` are not supported as Microsoft does not currently support delegated access to the Security and Compliance Center.
-
-AzureAD and MsolService do not support delegation using the paramters this function supports at this time
+Certain services do not support delegated access. Please review this commands description for more details.
 
 ```yaml
 Type: String
@@ -70,6 +74,21 @@ Required: True
 Position: 2
 Default value: None
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TenantId
+Azure Tenant Id (CustomerContextId) used for delegated access to an Azure AD tenant.
+
+```yaml
+Type: String
+Parameter Sets: Delegated
+Aliases:
+
+Required: True
+Position: 3
+Default value: None
+Accept pipeline input: True
 Accept wildcard characters: False
 ```
 
