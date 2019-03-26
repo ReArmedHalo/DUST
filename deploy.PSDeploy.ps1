@@ -29,12 +29,26 @@ if (
     $env:BHBuildSystem -eq 'AppVeyor'
 )
 {
+    [version]$nextGalleryVersion = Get-NextNugetPackageVersion -Name $env:BHProjectName -ErrorAction Stop
+    [version]$sourceVersion = Get-MetaData -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -ErrorAction Stop
+    [version]$devBuildVersion = $null
+
+    if ($nextGalleryVersion -ge $sourceVersion) {
+        # Gallery version is newer than source, trust gallery
+        [version]$devBuildVersion = $nextGalleryVersion
+    } else {
+        # Source is overriding next version purposed by Gallery, trusting source
+        [version]$devBuildVersion = $sourceVersion
+    }
+    
+    [version]$devBuildVersion = "$devBuildVersion.$($env:APPVEYOR_BUILD_NUMBER)"
+
     Deploy DeveloperBuild {
         By AppVeyorModule {
             FromSource $ENV:BHModulePath
             To AppVeyor
             WithOptions @{
-                Version = $env:APPVEYOR_BUILD_VERSION
+                Version = $devBuildVersion
             }
         }
     }
