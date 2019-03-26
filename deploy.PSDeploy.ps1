@@ -16,3 +16,15 @@ Deploy Module {
         }
     }
 }
+
+if ( $env:BHModulePath -and $env:BHBuildSystem -eq 'AppVeyor' ) {
+    Deploy DeveloperBuild {
+        By AppVeyorModule {
+            FromSource $ENV:BHModulePath
+            To AppVeyor
+            WithOptions @{
+                Version = $env:APPVEYOR_BUILD_VERSION
+            }
+        }
+    }
+}
