@@ -14,15 +14,6 @@ if (
                 ApiKey = $ENV:NuGetApiKey
             }
         }
-
-        By PlatyPS {
-            FromSource 'docs'
-            To "$($ENV:BHModulePath)\en-US"
-            Tagged docs
-            WithOptions @{
-                Force = $true
-            }
-        }
     }
 } else {
     "Skipping deployment: To deploy, ensure that...`n" +
@@ -44,15 +35,6 @@ if (
             To AppVeyor
             WithOptions @{
                 Version = $env:APPVEYOR_BUILD_VERSION
-            }
-        }
-
-        By PlatyPS {
-            FromSource 'docs'
-            To "$($ENV:BHModulePath)\en-US"
-            Tagged docs
-            WithOptions @{
-                Force = $true
             }
         }
     }

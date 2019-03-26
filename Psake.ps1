@@ -110,10 +110,10 @@ Task BuildDocs -Depends Init {
     $lines
 
     $Params = @{
-        Path = $ProjectRoot
-        Recurse = $false
-        Force = $true
-        Tags = 'docs'
+        Path = 'docs'
+        OutputPath = "$ENV:BHModulePath\en-US"
+        ShowProgress = $TRUE
     }
-    Invoke-PSDeploy @Verbose @Params
+
+    New-ExternalHelp @Params
 }
