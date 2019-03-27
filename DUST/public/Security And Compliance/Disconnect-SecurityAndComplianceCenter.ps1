@@ -1,3 +1,6 @@
+<#
+    .EXTERNALHELP ..\..\Disconnect-SecurityAndComplianceCenter-help.xml
+#>
 Function Disconnect-SecurityAndComplianceCenter {
     [CmdletBinding()] Param ()
     
