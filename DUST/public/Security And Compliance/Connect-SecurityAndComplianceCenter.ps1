@@ -12,9 +12,3 @@ Function Connect-SecurityAndComplianceCenter {
     # If we import the session as a module, then we can make other commands available outside the function scope
     Import-Module (Import-PSSession $SCCSession -AllowClobber -DisableNameChecking) -DisableNameChecking -Global
 }
-
-Function Disconnect-SecurityAndComplianceCenter {
-    [CmdletBinding()] Param ()
-    
-    Get-PSSession | Where-Object {$_.Name -like 'DUST-SCC'} | Remove-PSSession
-}
