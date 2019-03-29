@@ -2,7 +2,7 @@
 Function Remove-BrokenOrClosedDUSTPSSessions {
     [CmdletBinding(SupportsShouldProcess)] Param ()
 
-    if ($PSCmdlet.ShouldProcess()) {
+    if ($PSCmdlet.ShouldProcess('Find and remove any closed or broken PSSessions that start with "DUST-".')) {
         $psBroken = Get-PSSession | where-object {$_.State -like "*Broken*" -and $_.Name -like "DUST-*"}
         $psClosed = Get-PSSession | where-object {$_.State -like "*Closed*" -and $_.Name -like "DUST-*"}
 
