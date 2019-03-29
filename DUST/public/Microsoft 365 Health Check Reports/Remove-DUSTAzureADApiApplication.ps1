@@ -1,7 +1,4 @@
-<#
-    .EXTERNALHELP ..\..\Remove-DUSTAADAPIApplication-help.xml
-#>
-Function New-DUSTAADAPIApplication {
+Function Remove-DUSTAzureADApiApplication {
     [CmdletBinding()] Param (
         [Parameter(Mandatory)]
         [String] $ObjectId
