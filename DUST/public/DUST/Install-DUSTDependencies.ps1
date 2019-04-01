@@ -25,7 +25,7 @@ Function Install-DUSTDependencies {
             Write-Progress -Id 1 -Activity $progressActivity -Status "Preparing" -PercentComplete 5
 
             if ($IsWindows -or $ENV:OS -like 'Windows_NT') {
-                # Exchange Online Remote PowerShell Modul
+                # Exchange Online Remote PowerShell Module
                 Write-Progress -Id 1 -Activity $progressActivity -Status "Step 1 of $stepMax" -CurrentOperation 'Installing Exchange Online PowerShell Module (ClickOnce)' -PercentComplete ((100/$stepMax)*1)
                 Install-ClickOnce -Manifest 'https://cmdletpswmodule.blob.core.windows.net/exopsmodule/Microsoft.Online.CSE.PSModule.Client.application'
 
