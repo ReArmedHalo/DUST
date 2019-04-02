@@ -1,6 +1,3 @@
-<#
-    .EXTERNALHELP ..\..\New-DUSTAzureADApiApplication-help.xml
-#>
 Function New-DUSTAzureADApiApplication {
     [CmdletBinding()] param (
         [Parameter(Mandatory)]

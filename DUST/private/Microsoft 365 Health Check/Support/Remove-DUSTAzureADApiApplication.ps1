@@ -9,7 +9,7 @@ Function Remove-DUSTAzureADApiApplication {
             if ($app.DisplayName -eq 'DUST PS Module Graph API Access') {
                 Remove-AzureADApplication -ObjectId $ObjectId
             } else {
-                Write-Error 'We could not confirm the expected ObjectId matches the application DUST created.'
+                Write-Error 'We could not confirm the expected ObjectId matches the application DUST created. Application may still exist in tenant!'
             }
         }
     } catch {

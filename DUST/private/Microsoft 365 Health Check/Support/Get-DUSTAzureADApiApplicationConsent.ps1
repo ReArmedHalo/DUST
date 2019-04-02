@@ -7,10 +7,6 @@ Function Get-DUSTAzureADApiApplicationConsent {
         [String] $TenantDomain
     )
 
-    Write-Host "CliendId: $($ClientCredentials.UserName)"
-    Write-Host "ClientSecret: $($ClientCredentials.GetNetworkCredential().Password)"
-    Write-Host "TenantDomain: $TenantDomain"
-
     try {
         $graphAppParams = @{
             Name = 'DUST PS Module Graph API Access'
