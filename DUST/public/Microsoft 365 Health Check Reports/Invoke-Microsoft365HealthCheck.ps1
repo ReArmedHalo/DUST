@@ -116,7 +116,7 @@ Function Invoke-Microsoft365HealthCheck {
     }
     catch {
         # Try and take down the temporary application
-        #Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
+        Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
         Write-Error $_
     }
 }
