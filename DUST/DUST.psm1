@@ -10,4 +10,3 @@ foreach ($import in @($public + $private)) {
 }
 
 Export-ModuleMember -Function $public.BaseName
-Export-ModuleMember -Function $private.BaseName
