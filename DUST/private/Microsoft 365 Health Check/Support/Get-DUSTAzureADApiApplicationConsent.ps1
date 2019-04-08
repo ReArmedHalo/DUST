@@ -7,6 +7,15 @@ Function Get-DUSTAzureADApiApplicationConsent {
         [String] $TenantDomain
     )
 
+    $applicationProvisioningComplete = $false
+    while (!($applicationProvisioningComplete)) {
+        $azureADApplications = Get-AzureADApplication | Select-Object ObjectId
+        if ($azureADApplications.ObjectId -contains $Application.ObjectId) {
+            $applicationProvisioningComplete = $true
+        }
+        Start-Sleep -Milliseconds 5000
+    }
+    
     try {
         $graphAppParams = @{
             Name = 'DUST PS Module Graph API Access'
