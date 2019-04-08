@@ -38,10 +38,7 @@ Function Invoke-Microsoft365HealthCheck {
         [Switch] $InboxMailForwardOrRedirectRules,
 
         [Parameter(ParameterSetName='Selective')]
-        [Switch] $MalwareAudit,
-
-        [Parameter(ParameterSetName='Selective')]
-        [Switch] $FlaggedAsPhishingAudit
+        [Switch] $UserAdministrationActivities
     )
 
     if (-Not (Test-Path $OutputPath)) {
@@ -73,7 +70,7 @@ Function Invoke-Microsoft365HealthCheck {
         }
         
         # If we are asking for a report that requires the Graph API, build the app
-        if ($All -or $RoleAdministrationActivities -or $SecureScore) {
+        if ($All -or $RoleAdministrationActivities -or $SecureScore -or $UserAdministrationActivities) {
             $application = New-DUSTAzureADApiApplication -TenantDomain $TenantDomain
             $clientCredentials = New-Object System.Management.Automation.PSCredential($application.ClientId,($application.ClientSecret | ConvertTo-SecureString -AsPlainText -Force))
 
@@ -81,6 +78,9 @@ Function Invoke-Microsoft365HealthCheck {
             # Not sure if there is a better way to wait to ensure the consent dialog won't error
             Start-Sleep -Milliseconds 10000
             $accessToken = Get-DUSTAzureADApiApplicationConsent -ClientCredentials $clientCredentials -TenantDomain $TenantDomain
+            if (!($accessToken)) {
+                Write-Error 'Failed to obtain access token!'
+            }
         }
 
         # Do the reports
@@ -113,10 +113,15 @@ Function Invoke-Microsoft365HealthCheck {
         if ($All -or $InboxMailForwardOrRedirectRules) {
             Get-MS365HCInboxMailForwardOrRedirectRules -OutputPath $OutputPath -StartDate $utcDateTime
         }
+
+        # -- User creation or deletion rules
+        if ($All -or $UserAdministrationActivities) {
+            Get-MS365HCUserAdministrationActivities -OutputPath $OutputPath -StartDate $utcDateTime
+        }
     }
     catch {
         # Try and take down the temporary application
-        Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
+        #Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
         Write-Error $_
     }
 }
