@@ -87,7 +87,7 @@ Function Invoke-Microsoft365HealthCheck {
 
         # -- Role Administration Activities
         if ($All -or $RoleAdministrationActivities) {
-            Get-MS365HCRoleAdministrationActivitiesAudit -AccessToken $accessToken -OutputPath $OutputPath -StartDate $utcDateTime
+            Get-MS365HCRoleAdministrationActivities -AccessToken $accessToken -OutputPath $OutputPath -StartDate $utcDateTime
         }
 
         # -- Secure Score

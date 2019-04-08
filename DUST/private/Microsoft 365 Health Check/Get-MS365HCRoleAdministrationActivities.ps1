@@ -1,4 +1,4 @@
-Function Get-MS365HCRoleAdministrationActivitiesAudit {
+Function Get-MS365HCRoleAdministrationActivities {
     [CmdletBinding()] Param (
         [Parameter(Mandatory)]
         [String] $AccessToken,
