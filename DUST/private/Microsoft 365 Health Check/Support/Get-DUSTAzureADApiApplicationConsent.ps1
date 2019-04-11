@@ -1,7 +1,7 @@
 Function Get-DUSTAzureADApiApplicationConsent {
     [CmdletBinding()] param (
         [Parameter(Mandatory)]
-        [PSCredential] $ClientCredentials,
+        [String] $ClientId,
 
         [Parameter(Mandatory)]
         [String] $TenantDomain
@@ -17,22 +17,12 @@ Function Get-DUSTAzureADApiApplicationConsent {
     }
     
     try {
-        $graphAppParams = @{
-            Name = 'DUST PS Module Graph API Access'
-            ClientCredential = $ClientCredentials
-            RedirectUri = 'https://localhost/'
-            Tenant = $TenantDomain
+        $authContext = New-Object 'Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext' -ArgumentList "https://login.microsoftonline.com/$TenantDomain"
+        $platformParameters = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters" -ArgumentList "Auto"
+        $authResult = $authContext.AcquireTokenAsync('https://graph.microsoft.com', $ClientId, 'https://localhost', $platformParameters).Result
+        if ($authResult) {
+            return $authResult.AccessToken
         }
-        $graphApplication = New-GraphApplication @GraphAppParams
-        $authenticationCode = $graphApplication | Get-GraphOauthAuthorizationCode
-        # Sleep again! Ran into occassional issues with it not allowing the function to return properly
-        Start-Sleep -Milliseconds 10000
-        $accessToken = Get-GraphOauthAccessToken -Resource 'https://graph.microsoft.com' -AuthenticationCode $authenticationCode
-        if (!($accessToken)) {
-            Start-Sleep -Milliseconds 10000
-            $accessToken = Get-GraphOauthAccessToken -Resource 'https://graph.microsoft.com' -AuthenticationCode $authenticationCode
-        }
-        return $accessToken.GetAccessToken()
     } catch {
         Write-Error $_
     }

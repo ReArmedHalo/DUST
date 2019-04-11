@@ -3,6 +3,9 @@ Function Get-MS365HCUserAdministrationActivities {
         [Parameter(Mandatory)]
         [String] $OutputPath,
 
+        [Parameter(Mandatory)]
+        [String] $AccessToken,
+        
         # In UTC
         [Parameter(Mandatory)]
         [String] $StartDate
