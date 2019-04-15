@@ -1,7 +1,7 @@
 Function Get-DUSTAzureADApiApplicationConsent {
     [CmdletBinding()] param (
         [Parameter(Mandatory)]
-        [String] $ClientId,
+        [PSObject] $Application,
 
         [Parameter(Mandatory)]
         [String] $TenantDomain
@@ -17,12 +17,22 @@ Function Get-DUSTAzureADApiApplicationConsent {
     }
     
     try {
-        $authContext = New-Object 'Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext' -ArgumentList "https://login.microsoftonline.com/$TenantDomain"
-        $platformParameters = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.PlatformParameters" -ArgumentList "Auto"
-        $authResult = $authContext.AcquireTokenAsync('https://graph.microsoft.com', $ClientId, 'https://localhost', $platformParameters).Result
-        if ($authResult) {
-            return $authResult.AccessToken
+        $clientCredentials = New-Object System.Management.Automation.PSCredential($Application.ClientId,($Application.ClientSecret | ConvertTo-SecureString -AsPlainText -Force))
+        $GraphAppParams = @{
+            Name = 'DUST PS Module Graph API Access'
+            ClientCredential = $clientCredentials
+            RedirectUri = 'https://localhost/'
+            Tenant = 'biohivetech.onmicrosoft.com'
         }
+        $graphApp = New-GraphApplication @GraphAppParams
+        $authCode = $GraphApp | Get-GraphOauthAuthorizationCode
+        Write-Verbose "Auth Code: $authCode"
+        $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode -Verbose
+        Write-Verbose "Access Token Details: $"
+        $graphAccessToken.
+        $accessToken = $graphAccessToken.GetAccessToken()
+        Write-Verbose "Access Token: $graphAccessToken"
+        return $accessToken
     } catch {
         Write-Error $_
     }

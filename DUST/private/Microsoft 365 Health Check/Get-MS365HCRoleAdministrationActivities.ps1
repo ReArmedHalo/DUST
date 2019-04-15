@@ -13,6 +13,7 @@ Function Get-MS365HCRoleAdministrationActivities {
 
     try {
         $graphRequestUri = "https://graph.microsoft.com/beta/auditlogs/directoryaudits?`$filter=activityDateTime gt $StartDate and loggedByService eq 'Core Directory' and activityDisplayName eq 'Remove member from role' or activityDisplayName eq 'Add member to role'"
+        Write-Verbose "Header: Bearer $AccessToken"
         $response = Invoke-WebRequest -Method 'GET' -Uri $graphRequestUri -ContentType "application/json" -Headers @{Authorization = "Bearer $AccessToken"} -ErrorAction Stop
         Write-Verbose $response
         $json = ($response.Content | ConvertFrom-Json)

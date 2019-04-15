@@ -80,12 +80,13 @@ Function Invoke-Microsoft365HealthCheck {
             Write-Verbose 'Application Details:'
             Write-Verbose "    Object ID: $($application.ObjectId)"
             Write-Verbose "    Client ID / App ID: $($application.ClientId)"
+            Write-Verbose "    Client Secret: $($application.ClientSecret)"
 
             # It seems if we don't wait, trying to get consent might throw an error that the application doesn't exist
             # Not sure if there is a better way to wait to ensure the consent dialog won't error
             Start-Sleep -Milliseconds 10000
             Write-Verbose 'Fetching access token'
-            $accessToken = Get-DUSTAzureADApiApplicationConsent -ClientId $application.ClientId -TenantDomain $TenantDomain
+            $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain
             Write-Verbose "    Received: $accessToken"
             if (!($accessToken)) {
                 Write-Error 'Failed to obtain access token!'
@@ -126,13 +127,13 @@ Function Invoke-Microsoft365HealthCheck {
         # -- Take down the temporary application, if required
         if ($All -or $accessToken) {
             Write-Verbose 'Taking down Azure AD application'
-            #Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
+            Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
         }
     }
     catch {
         # Try and take down the temporary application
         Write-Verbose 'Taking down Azure AD application'
-        #Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
+        Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
         Write-Error $_
     }
 }
