@@ -28,10 +28,10 @@ Function Get-DUSTAzureADApiApplicationConsent {
         $authCode = $GraphApp | Get-GraphOauthAuthorizationCode
         Write-Verbose "Auth Code: $authCode"
         $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode -Verbose
-        Write-Verbose "Access Token Details: $"
+        Write-Verbose "Access Token Details: $graphAccessToken"
         $graphAccessToken.
         $accessToken = $graphAccessToken.GetAccessToken()
-        Write-Verbose "Access Token: $graphAccessToken"
+        Write-Verbose "Access Token: $accessToken"
         return $accessToken
     } catch {
         Write-Error $_
