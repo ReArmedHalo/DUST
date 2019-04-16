@@ -42,7 +42,13 @@ Function Invoke-Microsoft365HealthCheck {
         [Switch] $UserAdministrationActivities,
 
         [Parameter(ParameterSetName='Selective')]
-        [Switch] $eDiscoveryEvents
+        [Switch] $eDiscoveryEvents,
+
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $AzureADGroupAdministrationActivities,
+
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $ExchangeMailboxActivities
     )
 
     if (-Not (Test-Path $OutputPath)) {
@@ -65,7 +71,8 @@ Function Invoke-Microsoft365HealthCheck {
         if ( # AzureAD
             $All -or
             $RoleAdministrationActivities -or
-            $SecureScore
+            $SecureScore -or
+            $UserAdministrationActivities
         ) {
             Write-Verbose 'Reports requested require access to the Azure Graph API, connecting to AzureAD'
             Connect-AzureAD -ErrorAction Stop | Out-Null
@@ -74,7 +81,9 @@ Function Invoke-Microsoft365HealthCheck {
         if ( # ExchangeOnline
             $All -or
             $MailboxAuditStatus -or
-            $eDiscoveryEvents
+            $eDiscoveryEvents -or
+            $AzureADGroupAdministrationActivities -or
+            $ExchangeMailboxActivities
         ) {
             Write-Verbose 'Reports requested require Exchange Online, connecting to Exchange Online'
             Connect-OnlineService -Service ExchangeOnline -ErrorAction Stop | Out-Null   
