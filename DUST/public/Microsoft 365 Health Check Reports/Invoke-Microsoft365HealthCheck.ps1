@@ -1,3 +1,5 @@
+# TODO: Clean this mess of a function up!
+
 <#
     .EXTERNALHELP ..\..\Invoke-Microsoft365HealthCheck-help.xml
 #>
@@ -37,7 +39,10 @@ Function Invoke-Microsoft365HealthCheck {
         [Switch] $InboxMailForwardOrRedirectRules,
 
         [Parameter(ParameterSetName='Selective')]
-        [Switch] $UserAdministrationActivities
+        [Switch] $UserAdministrationActivities,
+
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $eDiscoveryEvents
     )
 
     if (-Not (Test-Path $OutputPath)) {
@@ -55,6 +60,7 @@ Function Invoke-Microsoft365HealthCheck {
     $application = $null
 
     try {
+        #region Login to services
         # Determine which services we need to login to
         if ( # AzureAD
             $All -or
@@ -67,14 +73,21 @@ Function Invoke-Microsoft365HealthCheck {
 
         if ( # ExchangeOnline
             $All -or
-            $MailboxAuditStatus
+            $MailboxAuditStatus -or
+            $eDiscoveryEvents
         ) {
             Write-Verbose 'Reports requested require Exchange Online, connecting to Exchange Online'
             Connect-OnlineService -Service ExchangeOnline -ErrorAction Stop | Out-Null   
         }
-        
+        #endregion Login to services
+
         # If we are asking for a report that requires the Graph API, build the app and get administrator approval for permissions
-        if ($All -or $RoleAdministrationActivities -or $SecureScore -or $UserAdministrationActivities) {
+        if ( # Azure AD
+            $All -or
+            $RoleAdministrationActivities -or
+            $SecureScore -or
+            $UserAdministrationActivities
+        ) {
             Write-Verbose 'Preparing to build Azure AD Application...'
             $application = New-DUSTAzureADApiApplication
             Write-Verbose 'Application Details:'
@@ -109,8 +122,7 @@ Function Invoke-Microsoft365HealthCheck {
             Write-Verbose "    Received: $accessToken"
         }
 
-        # Do the reports
-
+        #region Call Report Functions
         # -- Role Administration Activities
         if ($All -or $RoleAdministrationActivities) {
             Get-MS365HCRoleAdministrationActivities -OutputPath $OutputPath -AccessToken $accessToken -StartDate $utcDateTime
@@ -139,6 +151,12 @@ Function Invoke-Microsoft365HealthCheck {
         if ($All -or $UserAdministrationActivities) {
             Get-MS365HCUserAdministrationActivities -OutputPath $OutputPath -AccessToken $accessToken -StartDate $utcDateTime
         }
+
+        # -- eDiscovery Events
+        if ($All -or $eDiscoveryEvents) {
+            Get-MS365HCeDiscoveryEvents -OutputPath $OutputPath -StartDate $StartDate
+        }
+        #endregion Call Report Functions
 
         # -- Take down the temporary application, if required
         if ($All -or $application) {
