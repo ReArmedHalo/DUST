@@ -16,10 +16,17 @@ Function Get-MS365HCExchangeMailboxActivities {
     $outputData = @()
     foreach ($auditRecord in $results) {
         $auditData = $auditRecord.AuditData | ConvertFrom-Json
+        $parameters = New-Object PSObject
+        foreach ($parameter in $auditData.Parameters) {
+            $parameters | Add-Member -NotePropertyName $parameter.Name -NotePropertyValue $parameter.Value
+        }
         $hash = [Ordered]@{
             CreationTime = $auditData.CreationTime
             Operation = $auditData.Operation
             UserId = $auditData.UserId
+            UserPrincipalName = (Get-Mailbox -Identity $auditData.Identity | Select-Object UserPrincipalName)
+            User = $parameters.User
+            AccessRights = $parameters.AccessRights
         }
         $outputEntry = New-object PSObject -Property $hash
         $outputData += $outputEntry
