@@ -8,7 +8,7 @@ Function Invoke-Microsoft365HealthCheck {
 
         # Converts to UTC from users local timezone
         [Parameter()]
-        [DateTime] $StartDate = "$(Get-Date (Get-Date).AddDays(-30).ToUniversalTime() -Format 'yyyy-MM-ddTHH:mm')Z",
+        [DateTime] $StartDate = ((Get-Date).AddDays(-30)),
 
         #[Parameter()]
         #[Switch] $ConvertOutputTimeToLocalTimezone = $false,
@@ -45,7 +45,7 @@ Function Invoke-Microsoft365HealthCheck {
     }
 
     # Convert time to proper format and UTC
-    $utcDateTime = (Get-Date ($StartDate).ToUniversalTime() -Format 'yyyy-MM-ddTHH:mm')
+    $utcDateTime = "$(Get-Date ($StartDate).ToUniversalTime() -Format 'yyyy-MM-ddTHH:mm')Z"
 
     Write-Verbose "Input Date Time: $StartDate"
     Write-Verbose "UTC Date Time: $utcDateTime"
@@ -86,11 +86,27 @@ Function Invoke-Microsoft365HealthCheck {
             # Not sure if there is a better way to wait to ensure the consent dialog won't error
             Start-Sleep -Milliseconds 10000
             Write-Verbose 'Fetching access token'
-            $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain
-            Write-Verbose "    Received: $accessToken"
-            if (!($accessToken)) {
-                Write-Error 'Failed to obtain access token!'
+
+            $consentUrl = "https://login.microsoftonline.com/common/adminconsent?client_id=$($application.ClientId)"
+
+            [System.Diagnostics.Process]::Start('chrome.exe',"--incognito $consentUrl")
+
+            Read-host 'Press enter to continue after authorizating the application'
+
+            $uri = "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"
+            # Construct Body
+            $body = @{
+                client_id     = $application.ClientId
+                scope         = "https://graph.microsoft.com/.default"
+                client_secret = $application.ClientSecret
+                grant_type    = "client_credentials"
             }
+            # Get OAuth 2.0 Token
+            $tokenRequest = Invoke-WebRequest -Method Post -Uri $uri -ContentType "application/x-www-form-urlencoded" -Body $body -UseBasicParsing
+            # Access Token
+            $accessToken = ($tokenRequest.Content | ConvertFrom-Json).access_token
+
+            Write-Verbose "    Received: $accessToken"
         }
 
         # Do the reports
@@ -125,7 +141,7 @@ Function Invoke-Microsoft365HealthCheck {
         }
 
         # -- Take down the temporary application, if required
-        if ($All -or $accessToken) {
+        if ($All -or $application) {
             Write-Verbose 'Taking down Azure AD application'
             Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
         }

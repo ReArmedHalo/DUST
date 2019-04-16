@@ -9,12 +9,7 @@ Function Get-MS365HCInboxMailForwardOrRedirectRules {
     )
 
     try {
-        # Fetch all mailboxes to loop through
-        $mailboxes = Get-Mailbox -ResultSize unlimited
-
-        foreach ($mailbox in $mailboxes) {
-            $auditLogResults = Search-UnifiedAuditLog -Operations New-InboxRule,Set-InboxRule -StartDate $StartDate -EndDate (Get-Date -Format 'yyyy-MM-dd 23:59:59')
-        }
+        $auditLogResults = Search-UnifiedAuditLog -Operations New-InboxRule,Set-InboxRule -StartDate $StartDate -EndDate (Get-Date -Format 'yyyy-MM-dd 23:59:59')
 
         $rules = @()
         foreach ($auditEntry in $auditLogResults) {
