@@ -21,6 +21,30 @@ Function Invoke-Microsoft365HealthCheck {
         [Parameter(ParameterSetName='All')]
         [Switch] $All,
 
+        # Get-MS365HCAzureADGroupAdministrationActivities
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $AzureADGroupAdministrationActivities,
+
+        # Get-MS365HCeDiscoveryEvents
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $eDiscoveryEvents,
+
+        # Get-MS365HCExchangeMailboxActivities
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $ExchangeMailboxActivities,
+
+        # Get-MS365HCInboxMailForwardOrRedirectRules
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $InboxMailForwardOrRedirectRules,
+
+        # Get-MS365HCMailboxAuditStatus
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $MailboxAuditStatus,
+
+        # Get-MS365HCOrganizationAuditStatus
+        [Parameter(ParameterSetName='Selective')]
+        [Switch] $OrganizationAuditStatus,
+
         # Get-MS365HCRoleAdministrationActiviiesAudit
         [Parameter(ParameterSetName='Selective')]
         [Switch] $RoleAdministrationActivities,
@@ -29,61 +53,59 @@ Function Invoke-Microsoft365HealthCheck {
         [Parameter(ParameterSetName='Selective')]
         [Switch] $SecureScore,
 
+        # Get-MS365HCUserAdministrationActivities
         [Parameter(ParameterSetName='Selective')]
-        [Switch] $OrganizationAuditStatus,
-
-        [Parameter(ParameterSetName='Selective')]
-        [Switch] $MailboxAuditStatus,
-
-        [Parameter(ParameterSetName='Selective')]
-        [Switch] $InboxMailForwardOrRedirectRules,
-
-        [Parameter(ParameterSetName='Selective')]
-        [Switch] $UserAdministrationActivities,
-
-        [Parameter(ParameterSetName='Selective')]
-        [Switch] $eDiscoveryEvents,
-
-        [Parameter(ParameterSetName='Selective')]
-        [Switch] $AzureADGroupAdministrationActivities,
-
-        [Parameter(ParameterSetName='Selective')]
-        [Switch] $ExchangeMailboxActivities
+        [Switch] $UserAdministrationActivities
     )
 
-    if (-Not (Test-Path $OutputPath)) {
+    $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+    Write-Verbose "Checking for output folder: $scriptDirectory"
+    if (Test-Path $OutputPath) {
+        Write-Verbose 'Directory exists, is it empty?'
+        $count = Get-ChildItem -Path $OutputPath | Measure-Object
+        Write-Verbose "Directory contains: $count items!"
+        if ($count -gt 0) {
+            Write-Error "$OutputPath not empty! Please empty the directory or specify a new output folder."
+            return 1
+        }
+    } else {
+        Write-Verbose "Creating directory: Split-Path -Parent $scriptDirectory\$OutputPath"
         New-Item -Path $OutputPath -ItemType Directory
     }
 
+    Write-Verbose "Input Start Timestamp: $StartDate"
     # Convert time to proper format and UTC
     $utcDateTime = "$(Get-Date ($StartDate).ToUniversalTime() -Format 'yyyy-MM-ddTHH:mm')Z"
-
-    Write-Verbose "Input Date Time: $StartDate"
     Write-Verbose "UTC Date Time: $utcDateTime"
 
     # Needed for Graph API
     $accessToken = $null
     $application = $null
 
+    $azureADRequired = $false
+
     try {
         #region Login to services
         # Determine which services we need to login to
         if ( # AzureAD
             $All -or
+            $AzureADGroupAdministrationActivities -or
             $RoleAdministrationActivities -or
-            $SecureScore -or
+            $SecureScore -or 
             $UserAdministrationActivities
         ) {
+            $azureADRequired = $true
             Write-Verbose 'Reports requested require access to the Azure Graph API, connecting to AzureAD'
             Connect-AzureAD -ErrorAction Stop | Out-Null
         }
 
         if ( # ExchangeOnline
             $All -or
-            $MailboxAuditStatus -or
             $eDiscoveryEvents -or
-            $AzureADGroupAdministrationActivities -or
-            $ExchangeMailboxActivities
+            $ExchangeMailboxActivities -or
+            $InboxMailForwardOrRedirectRules -or
+            $MailboxAuditStatus -or
+            $OrganizationAuditStatus
         ) {
             Write-Verbose 'Reports requested require Exchange Online, connecting to Exchange Online'
             Connect-OnlineService -Service ExchangeOnline -ErrorAction Stop | Out-Null   
@@ -91,12 +113,7 @@ Function Invoke-Microsoft365HealthCheck {
         #endregion Login to services
 
         # If we are asking for a report that requires the Graph API, build the app and get administrator approval for permissions
-        if ( # Azure AD
-            $All -or
-            $RoleAdministrationActivities -or
-            $SecureScore -or
-            $UserAdministrationActivities
-        ) {
+        if ( $azureADRequired ) {
             Write-Verbose 'Preparing to build Azure AD Application...'
             $application = New-DUSTAzureADApiApplication
             Write-Verbose 'Application Details:'
@@ -110,28 +127,70 @@ Function Invoke-Microsoft365HealthCheck {
             Write-Verbose 'Fetching access token'
 
             $consentUrl = "https://login.microsoftonline.com/common/adminconsent?client_id=$($application.ClientId)"
+            Write-Verbose "Consent Url: $consentUrl"
 
-            [System.Diagnostics.Process]::Start('chrome.exe',"--incognito $consentUrl")
+            #region I hate this method...
+            # Prefer chrome, because chrome, but fallback to Internet Explore
+            if ((Get-Item (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe').'(Default)').VersionInfo) {
+                [System.Diagnostics.Process]::Start('chrome.exe',"--incognito $consentUrl")   
+            } else {
+                [System.Diagnostics.Process]::Start('iexplore.exe',"$consentUrl -private")
+            }
 
             Read-host 'Press enter to continue after authorizating the application'
+            # Sleeping again for a few seconds just to be safe
+            Start-Sleep -Milliseconds 2000
 
-            $uri = "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"
-            # Construct Body
+            # common may need to be $TenantDomain
+            $uri = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
             $body = @{
                 client_id     = $application.ClientId
-                scope         = "https://graph.microsoft.com/.default"
+                scope         = 'https://graph.microsoft.com'
                 client_secret = $application.ClientSecret
-                grant_type    = "client_credentials"
+                grant_type    = 'client_credentials'
             }
             # Get OAuth 2.0 Token
-            $tokenRequest = Invoke-WebRequest -Method Post -Uri $uri -ContentType "application/x-www-form-urlencoded" -Body $body -UseBasicParsing
+            $tokenRequest = Invoke-WebRequest -Method Post -Uri $uri -ContentType 'application/x-www-form-urlencoded' -Body $body -UseBasicParsing
             # Access Token
             $accessToken = ($tokenRequest.Content | ConvertFrom-Json).access_token
-
             Write-Verbose "    Received: $accessToken"
+
+            if (-Not ($accessToken)) {
+                Write-Error 'We ran into an issue getting an access token.'
+                Write-Error $tokenRequest.Content
+                return 1
+            }
+            #endregion I hate this method
         }
 
         #region Call Report Functions
+        if ($All -or $AzureADGroupAdministrationActivities) {
+            Get-MS365HCAzureADGroupAdministrationActivities -OutputPath $OutputPath -AccessToken $accessToken -StartDate $utcDateTime
+        }
+        
+        # -- eDiscovery Events
+        if ($All -or $eDiscoveryEvents) {
+            Get-MS365HCeDiscoveryEvents -OutputPath $OutputPath -StartDate $StartDate
+        }
+
+        if ($All -or $ExchangeMailboxActivities) {
+            Get-MS365HCExchangeMailboxActivities -OutputPath $OutputPath -StartDate $StartDate
+        }
+
+        # -- Forward or Redirect Mailbox rules
+        if ($All -or $InboxMailForwardOrRedirectRules) {
+            Get-MS365HCInboxMailForwardOrRedirectRules -OutputPath $OutputPath -StartDate $utcDateTime
+        }
+
+        if ($All -or $MailboxAuditStatus) {
+            Get-MS365HCMailboxAuditStatus -OutputPath $OutputPath
+        }
+
+        # -- Organization and Mailbox auditing
+        if ($All -or $OrganizationAuditStatus) {
+            Get-MS365HCOrganizationMailboxAuditStatus -OutputPath $OutputPath
+        }
+
         # -- Role Administration Activities
         if ($All -or $RoleAdministrationActivities) {
             Get-MS365HCRoleAdministrationActivities -OutputPath $OutputPath -AccessToken $accessToken -StartDate $utcDateTime
@@ -142,28 +201,9 @@ Function Invoke-Microsoft365HealthCheck {
             Get-MS365HCSecureScore -OutputPath $OutputPath -AccessToken $accessToken
         }
 
-        # -- Organization and Mailbox auditing
-        if ($All -or $OrganizationAuditStatus) {
-            Get-MS365HCOrganizationMailboxAuditStatus -OutputPath $OutputPath
-        }
-
-        if ($All -or $MailboxAuditStatus) {
-            Get-MS365HCMailboxAuditStatus -OutputPath $OutputPath
-        }
-
-        # -- Forward or Redirect Mailbox rules
-        if ($All -or $InboxMailForwardOrRedirectRules) {
-            Get-MS365HCInboxMailForwardOrRedirectRules -OutputPath $OutputPath -StartDate $utcDateTime
-        }
-
         # -- User creation or deletion rules
         if ($All -or $UserAdministrationActivities) {
             Get-MS365HCUserAdministrationActivities -OutputPath $OutputPath -AccessToken $accessToken -StartDate $utcDateTime
-        }
-
-        # -- eDiscovery Events
-        if ($All -or $eDiscoveryEvents) {
-            Get-MS365HCeDiscoveryEvents -OutputPath $OutputPath -StartDate $StartDate
         }
         #endregion Call Report Functions
 

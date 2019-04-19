@@ -3,9 +3,6 @@ Function Get-MS365HCExchangeMailboxActivities {
         [Parameter(Mandatory)]
         [String] $OutputPath,
 
-        [Parameter(Mandatory)]
-        [String] $AccessToken,
-
         # In UTC
         [Parameter(Mandatory)]
         [String] $StartDate
