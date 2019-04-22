@@ -5,9 +5,6 @@
 #>
 Function Invoke-Microsoft365HealthCheck {
     [CmdletBinding(DefaultParameterSetName='All')] Param (
-        [Parameter(Mandatory)]
-        [String] $TenantDomain,
-
         # Converts to UTC from users local timezone
         [Parameter()]
         [DateTime] $StartDate = ((Get-Date).AddDays(-30)),
