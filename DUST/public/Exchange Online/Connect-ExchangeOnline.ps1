@@ -27,6 +27,10 @@ Function Connect-ExchangeOnline {
             Import-Module $((Get-ChildItem -Path $($env:LOCALAPPDATA+'\Apps\2.0\') -Filter 'Microsoft.Exchange.Management.ExoPowershellModule.dll' -Recurse).FullName | Where-Object {$_ -notmatch '_none_'} | Select-Object -First 1)
             $EXOSession = New-ExoPSSession
         }
+        <#
+        # We need to import the session as a module otherwise it won't be available to the user
+        # DisableNameChecking just for a cleaner output (the user can't re-run the Import command it suggests anyways, we might add our own warning in the future)
+        #>
         Import-Module (Import-PSSession $EXOSession -AllowClobber -DisableNameChecking) -DisableNameChecking -Global
     } catch {
         Write-Error $_

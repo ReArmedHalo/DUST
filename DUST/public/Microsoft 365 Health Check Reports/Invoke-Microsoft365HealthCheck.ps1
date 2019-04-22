@@ -13,7 +13,7 @@ Function Invoke-Microsoft365HealthCheck {
         #[Switch] $ConvertOutputTimeToLocalTimezone = $false,
 
         [Parameter()]
-        [String] $OutputPath = '.\DUST Microsoft 365 Health Check',
+        [String] $OutputPath = 'DUST Microsoft 365 Health Check',
 
         [Parameter(ParameterSetName='All')]
         [Switch] $All,
@@ -55,18 +55,16 @@ Function Invoke-Microsoft365HealthCheck {
         [Switch] $UserAdministrationActivities
     )
 
-    $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
-    Write-Verbose "Checking for output folder: $scriptDirectory"
+    Write-Verbose "Checking for output folder: $(Get-Location)\$OutputPath"
     if (Test-Path $OutputPath) {
         Write-Verbose 'Directory exists, is it empty?'
-        $count = Get-ChildItem -Path $OutputPath | Measure-Object
+        $count = (Get-ChildItem -Path $OutputPath | Measure-Object).Count
         Write-Verbose "Directory contains: $count items!"
         if ($count -gt 0) {
-            Write-Error "$OutputPath not empty! Please empty the directory or specify a new output folder."
-            return 1
+            Write-Error "Output directory '$OutputPath' not empty! Please empty the directory or specify a new output folder." -ErrorAction Stop
         }
     } else {
-        Write-Verbose "Creating directory: Split-Path -Parent $scriptDirectory\$OutputPath"
+        Write-Verbose "Creating directory: $(Get-Location)\$OutputPath"
         New-Item -Path $OutputPath -ItemType Directory
     }
 
@@ -111,7 +109,6 @@ Function Invoke-Microsoft365HealthCheck {
 
         # If we are asking for a report that requires the Graph API, build the app and get administrator approval for permissions
         if ( $azureADRequired ) {
-            Write-Verbose 'Preparing to build Azure AD Application...'
             $application = New-DUSTAzureADApiApplication
             Write-Verbose 'Application Details:'
             Write-Verbose "    Object ID: $($application.ObjectId)"
@@ -154,8 +151,7 @@ Function Invoke-Microsoft365HealthCheck {
 
             if (-Not ($accessToken)) {
                 Write-Error 'We ran into an issue getting an access token.'
-                Write-Error $tokenRequest.Content
-                return 1
+                Write-Error $tokenRequest.Content -ErrorAction Stop
             }
             #endregion I hate this method
         }
@@ -212,8 +208,14 @@ Function Invoke-Microsoft365HealthCheck {
     }
     catch {
         # Try and take down the temporary application
-        Write-Verbose 'Taking down Azure AD application'
+        Write-Verbose "Taking down Azure AD application with ObjectId: $($application.ObjectId)"
         Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
-        Write-Error $_
+        Write-Verbose 'Disconnecting any remote PowerShell sessions...'
+
+        Remove-BrokenOrClosedDUSTPSSessions
+        Write-Error "Below are any remaining PowerShell sessions, you may need to close them manually with Remove-PSSession"
+        Get-PSSession
+
+        Write-Error $_ -ErrorAction Stop
     }
 }
