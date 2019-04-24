@@ -12,7 +12,7 @@ Function Get-MS365HCUserAdministrationActivities {
     )
 
     try {
-        $graphRequestUri = "https://graph.microsoft.com/beta/auditlogs/directoryaudits?`$filter=activityDateTime gt $StartDate and loggedByService eq 'Core Directory' and category eq 'UserManagement' and (activityDisplayName eq 'Add user' or activityDisplayName eq 'Remove user')"
+        $graphRequestUri = "https://graph.microsoft.com/beta/auditlogs/directoryaudits?`$filter=activityDateTime gt $StartDate and loggedByService eq 'Core Directory' and category eq 'UserManagement' and (activityDisplayName eq 'Add user' or activityDisplayName eq 'Delete user')"
         $response = Invoke-WebRequest -Method 'GET' -Uri $graphRequestUri -ContentType "application/json" -Headers @{Authorization = "Bearer $AccessToken"} -ErrorAction Stop
         $json = ($response.Content | ConvertFrom-Json)
         $results = $json.Value
