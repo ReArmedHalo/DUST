@@ -5,6 +5,9 @@
 #>
 Function Invoke-Microsoft365HealthCheck {
     [CmdletBinding(DefaultParameterSetName='All')] Param (
+        [Parameter(Mandatory)]
+        [String] $TenantDomain,
+
         # Converts to UTC from users local timezone
         [Parameter()]
         [DateTime] $StartDate = ((Get-Date).AddDays(-30)),
@@ -120,7 +123,7 @@ Function Invoke-Microsoft365HealthCheck {
             Start-Sleep -Milliseconds 10000
             Write-Verbose 'Fetching access token'
 
-            $consentUrl = "https://login.microsoftonline.com/common/adminconsent?client_id=$($application.ClientId)"
+            $consentUrl = "https://login.microsoftonline.com/$TenantDomain/adminconsent?client_id=$($application.ClientId)"
             Write-Verbose "Consent Url: $consentUrl"
 
             #region I hate this method...
@@ -136,10 +139,10 @@ Function Invoke-Microsoft365HealthCheck {
             Start-Sleep -Milliseconds 2000
 
             # common may need to be $TenantDomain
-            $uri = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+            $uri = "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"
             $body = @{
                 client_id     = $application.ClientId
-                scope         = 'https://graph.microsoft.com'
+                scope         = 'https://graph.microsoft.com/.default'
                 client_secret = $application.ClientSecret
                 grant_type    = 'client_credentials'
             }
