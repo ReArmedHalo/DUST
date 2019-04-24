@@ -136,7 +136,7 @@ Function Invoke-Microsoft365HealthCheck {
 
             Read-host 'Press enter to continue after authorizating the application'
             # Sleeping again for a few seconds just to be safe
-            Start-Sleep -Milliseconds 2000
+            Start-Sleep -Milliseconds 10000
 
             # common may need to be $TenantDomain
             $uri = "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"
