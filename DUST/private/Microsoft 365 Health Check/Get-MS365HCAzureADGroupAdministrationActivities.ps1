@@ -27,7 +27,7 @@ Function Get-MS365HCAzureADGroupAdministrationActivities {
             }
             $outputData += $entry
         }
-        $outputData | Export-Csv -Path "$OutputPath\UserAdministrationActivities.csv" -NoTypeInformation
+        $outputData | Export-Csv -Path "$OutputPath\AzureADGroupAdministrationActivities.csv" -NoTypeInformation
     } catch {
         Write-Error $_
     }

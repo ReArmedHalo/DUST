@@ -1,6 +1,20 @@
 # TODO: Clean this mess of a function up!
 
 <#
+    ISSUES
+
+    Inbox forward rules
+        RuleFrom blank
+
+    Exchange Mailbox Activities
+        UserPrincipalName is System.Object
+        Shorten or hide NAMPR05A004.prod.outlook.com/Microsoft Exchange Hosted Organizations/jcjones.onmicrosoft.com/Discovery Management
+
+    = AzureADGroupAdministrationActivities
+        Writes to wrong file
+#>
+
+<#
     .EXTERNALHELP ..\..\Invoke-Microsoft365HealthCheck-help.xml
 #>
 Function Invoke-Microsoft365HealthCheck {
