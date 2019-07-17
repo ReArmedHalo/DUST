@@ -22,14 +22,14 @@ Function Get-DUSTAzureADApiApplicationConsent {
             Name = 'DUST PS Module Graph API Access'
             ClientCredential = $clientCredentials
             RedirectUri = 'https://localhost/'
-            Tenant = 'biohivetech.onmicrosoft.com'
+            Tenant = $TenantDomain
         }
         $graphApp = New-GraphApplication @GraphAppParams
         $authCode = $GraphApp | Get-GraphOauthAuthorizationCode
         Write-Verbose "Auth Code: $authCode"
         $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode -Verbose
         Write-Verbose "Access Token Details: $graphAccessToken"
-        $graphAccessToken.
+        
         $accessToken = $graphAccessToken.GetAccessToken()
         Write-Verbose "Access Token: $accessToken"
         return $accessToken

@@ -103,7 +103,7 @@ Function Invoke-Microsoft365HealthCheck {
             $All -or
             $AzureADGroupAdministrationActivities -or
             $RoleAdministrationActivities -or
-            $SecureScore -or 
+            $SecureScore -or
             $UserAdministrationActivities
         ) {
             $azureADRequired = $true
@@ -137,40 +137,7 @@ Function Invoke-Microsoft365HealthCheck {
             Start-Sleep -Milliseconds 10000
             Write-Verbose 'Fetching access token'
 
-            $consentUrl = "https://login.microsoftonline.com/$TenantDomain/adminconsent?client_id=$($application.ClientId)"
-            Write-Verbose "Consent Url: $consentUrl"
-
-            #region I hate this method...
-            # Prefer chrome, because chrome, but fallback to Internet Explore
-            if ((Get-Item (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe').'(Default)').VersionInfo) {
-                [System.Diagnostics.Process]::Start('chrome.exe',"--incognito $consentUrl")   
-            } else {
-                [System.Diagnostics.Process]::Start('iexplore.exe',"$consentUrl -private")
-            }
-
-            Read-host 'Press enter to continue after authorizating the application'
-            # Sleeping again for a few seconds just to be safe
-            Start-Sleep -Milliseconds 10000
-
-            # common may need to be $TenantDomain
-            $uri = "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"
-            $body = @{
-                client_id     = $application.ClientId
-                scope         = 'https://graph.microsoft.com/.default'
-                client_secret = $application.ClientSecret
-                grant_type    = 'client_credentials'
-            }
-            # Get OAuth 2.0 Token
-            $tokenRequest = Invoke-WebRequest -Method Post -Uri $uri -ContentType 'application/x-www-form-urlencoded' -Body $body -UseBasicParsing
-            # Access Token
-            $accessToken = ($tokenRequest.Content | ConvertFrom-Json).access_token
-            Write-Verbose "    Received: $accessToken"
-
-            if (-Not ($accessToken)) {
-                Write-Error 'We ran into an issue getting an access token.'
-                Write-Error $tokenRequest.Content -ErrorAction Stop
-            }
-            #endregion I hate this method
+            $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain -verbose
         }
 
         #region Call Report Functions
