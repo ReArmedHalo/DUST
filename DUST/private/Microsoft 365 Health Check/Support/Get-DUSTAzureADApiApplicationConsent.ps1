@@ -25,7 +25,20 @@ Function Get-DUSTAzureADApiApplicationConsent {
             Tenant = $TenantDomain
         }
         $graphApp = New-GraphApplication @GraphAppParams
-        $authCode = $GraphApp | Get-GraphOauthAuthorizationCode
+        $tokenSuccess = $false
+        while (!$tokenSuccess) {
+            Write-Output "Requesting application permissions... If you receive an error, close the dialog and it will automatically be attempted again."
+            $authCode = $GraphApp | Get-GraphOauthAuthorizationCode
+            if ($authCode.Success) {
+                $tokenSuccess = $true
+            } else {
+                $tryAgain = Read-Host -Prompt 'Try again? (y/n): [y] '
+                if ([string]::IsNullOrWhiteSpace($tryAgain)) {
+                    Start-Sleep -Milliseconds 5000
+                    throw 'User aborted.'
+                }
+            }
+        }
         Write-Verbose "Auth Code: $authCode"
         $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode
         Write-Verbose "Access Token Details: $graphAccessToken"
