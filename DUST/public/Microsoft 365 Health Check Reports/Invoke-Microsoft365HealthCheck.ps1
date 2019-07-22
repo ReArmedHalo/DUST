@@ -8,10 +8,6 @@
 
     Exchange Mailbox Activities
         UserPrincipalName is System.Object
-        Shorten or hide NAMPR05A004.prod.outlook.com/Microsoft Exchange Hosted Organizations/jcjones.onmicrosoft.com/Discovery Management
-
-    = AzureADGroupAdministrationActivities
-        Writes to wrong file
 #>
 
 <#
