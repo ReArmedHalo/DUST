@@ -13,7 +13,7 @@ Function Install-DUSTDependencies {
         Write-Output 'Microsoft Online Services Sign-In Assistant for IT Professionals RTW (64-bit) - https://www.microsoft.com/en-us/download/details.aspx?id=28177'
         Write-Output 'Microsoft Online PowerShell Module - https://www.powershellgallery.com/packages/MSOnline'
         Write-Output 'Microsoft Azure AD PowerShell Module - https://www.powershellgallery.com/packages/AzureAD'
-        Write-Output 'PSMSGraph PowerShell Module - https://www.powershellgallery.com/packages/psmsgraph'
+        Write-Output 'PSMSGraph PowerShell Module (Minimum Version: 1.0.27.60) - https://www.powershellgallery.com/packages/psmsgraph'
     } else {
         $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
         if ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -53,7 +53,7 @@ Function Install-DUSTDependencies {
             # PSMSGraph
             if (!(Get-InstalledModule -Name 'PSMSGraph' -ErrorAction SilentlyContinue)) {
                 Write-Progress -Id 1 -Activity $progressActivity -Status "Step 8 of $stepMax" -CurrentOperation 'Installing PSMSGraph Powershell Module' -PercentComplete ((100/$stepMax)*8)
-                Install-Module -Name 'PSMSGraph' -Force
+                Install-Module -Name 'PSMSGraph' -MinimumVersion '1.0.27.60' -Force
             }
 
         } else {
