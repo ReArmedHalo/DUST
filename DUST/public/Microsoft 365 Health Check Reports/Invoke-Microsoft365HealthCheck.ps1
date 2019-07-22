@@ -5,9 +5,6 @@
 
     Inbox forward rules
         RuleFrom blank
-
-    Exchange Mailbox Activities
-        UserPrincipalName is System.Object
 #>
 
 <#
@@ -133,7 +130,7 @@ Function Invoke-Microsoft365HealthCheck {
             Start-Sleep -Milliseconds 10000
             Write-Verbose 'Fetching access token'
 
-            $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain -verbose
+            $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain
         }
 
         #region Call Report Functions
