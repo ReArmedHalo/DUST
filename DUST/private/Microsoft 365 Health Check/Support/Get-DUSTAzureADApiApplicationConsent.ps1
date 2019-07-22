@@ -27,7 +27,7 @@ Function Get-DUSTAzureADApiApplicationConsent {
         $graphApp = New-GraphApplication @GraphAppParams
         $authCode = $GraphApp | Get-GraphOauthAuthorizationCode
         Write-Verbose "Auth Code: $authCode"
-        $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode -Verbose
+        $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode
         Write-Verbose "Access Token Details: $graphAccessToken"
         
         $accessToken = $graphAccessToken.GetAccessToken()
