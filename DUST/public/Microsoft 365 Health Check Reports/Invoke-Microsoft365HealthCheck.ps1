@@ -101,7 +101,11 @@ Function Invoke-Microsoft365HealthCheck {
         ) {
             $azureADRequired = $true
             Write-Verbose 'Reports requested require access to the Azure Graph API, connecting to AzureAD'
-            Connect-AzureAD -ErrorAction Stop | Out-Null
+            try {
+                Connect-AzureAD -ErrorAction Stop | Out-Null
+            } catch {
+                throw "Failed to connect to Azure AD. Will not continue."
+            }
         }
 
         if ( # ExchangeOnline
@@ -113,7 +117,11 @@ Function Invoke-Microsoft365HealthCheck {
             $OrganizationAuditStatus
         ) {
             Write-Verbose 'Reports requested require Exchange Online, connecting to Exchange Online'
-            Connect-OnlineService -Service ExchangeOnline -ErrorAction Stop | Out-Null   
+            try {
+                Connect-OnlineService -Service ExchangeOnline -ErrorAction Stop | Out-Null   
+            } catch {
+                throw "Failed to connect to Exchange Online. Will not continue."
+            }
         }
         #endregion Login to services
 
@@ -131,6 +139,9 @@ Function Invoke-Microsoft365HealthCheck {
             Write-Verbose 'Fetching access token'
 
             $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain
+            if (!$accessToken) {
+                throw "Failed to obtained access token. Can't continue. See previous errors for additional information."
+            }
         }
 
         #region Call Report Functions
@@ -182,8 +193,7 @@ Function Invoke-Microsoft365HealthCheck {
             Write-Verbose 'Taking down Azure AD application'
             Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
         }
-    }
-    catch {
+    } catch {
         # Try and take down the temporary application
         Write-Verbose "Taking down Azure AD application with ObjectId: $($application.ObjectId)"
         Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
