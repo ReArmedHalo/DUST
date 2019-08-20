@@ -4,11 +4,6 @@ NOTES AND SUCH
 I have used bits of code for reference from certain sites listed below
 As this module is still in alpha, credit to the authors haven't been published into code
 
-Exchange Online PS Module
-https://cmdletpswmodule.blob.core.windows.net/exopsmodule/Microsoft.Online.CSE.PSModule.Client.application
-
-
-https://www.365admin.com.au/2017/01/how-to-configure-your-desktop-pc-for.html
 AzureRM > AZ - https://azure.microsoft.com/en-us/blog/azure-powershell-cross-platform-az-module-replacing-azurerm/
 
 https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_classes?view=powershell-6
