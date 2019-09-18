@@ -1,7 +1,7 @@
 <#
-    .EXTERNALHELP ..\..\Connect-AzureADDelegatedTenant-help.xml
+    .EXTERNALHELP ..\..\Clear-AzureADUserImmutableId-help.xml
 #>
-Function Connect-AzureADDelegatedTenant {
+Function Clear-AzureADUserImmutableId {
     [cmdletbinding()] Param (
         [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
         [String] $UserPrincipalName
