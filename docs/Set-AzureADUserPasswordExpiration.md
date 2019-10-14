@@ -12,22 +12,22 @@ Quickly set the password policy for Azure AD users
 
 ## SYNTAX
 
-### Set All Users to Expire
+### AllExpire
 ```
 Set-AzureADUserPasswordExpiration [-All] [-Expire] [<CommonParameters>]
 ```
 
-### Set All Users to Not Expire
+### AllNoExpire
 ```
 Set-AzureADUserPasswordExpiration [-All] [-None] [<CommonParameters>]
 ```
 
-### Search for Users to set to Expired
+### SearchStringExpire
 ```
 Set-AzureADUserPasswordExpiration [-SearchString <String>] [-Expire] [<CommonParameters>]
 ```
 
-### Search for Users to set to Not Expire
+### SearchStringNoExpire
 ```
 Set-AzureADUserPasswordExpiration [-SearchString <String>] [-None] [<CommonParameters>]
 ```
@@ -100,7 +100,7 @@ Parameter Sets: SearchStringExpire, SearchStringNoExpire
 Aliases:
 
 Required: False
-Position: Named
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -119,4 +119,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## NOTES
 
 ## RELATED LINKS
+
 [Microsoft Docs - Set the password expiration policy for your organization](https://docs.microsoft.com/en-us/office365/admin/add-users/set-password-to-never-expire?view=o365-worldwide)
