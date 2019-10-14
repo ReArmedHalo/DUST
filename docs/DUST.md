@@ -49,3 +49,5 @@ Handles calling the proper connection handler for a given service.
 ### [Install-DUSTDependencies](Install-DUSTDependencies.md)
 {{Manually Enter Install-DUSTDependencies Description Here}}
 
+### [Set-AzureADUserPasswordExpiration](Set-AzureADUserPasswordExpiration.md)
+{{Manually Enter Set-AzureADUserPasswordExpiration Descrption Here}}
