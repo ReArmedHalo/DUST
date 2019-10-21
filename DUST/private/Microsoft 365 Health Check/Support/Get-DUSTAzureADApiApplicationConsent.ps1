@@ -7,6 +7,9 @@ Function Get-DUSTAzureADApiApplicationConsent {
         [String] $TenantDomain
     )
 
+    Write-Verbose "Parameter: Application"
+    Write-Verbose $Application
+
     $applicationProvisioningComplete = $false
     while (!($applicationProvisioningComplete)) {
         $azureADApplications = Get-AzureADApplication | Select-Object ObjectId
@@ -17,34 +20,28 @@ Function Get-DUSTAzureADApiApplicationConsent {
     }
     
     try {
+        Write-Verbose "Building PS Credentials needed for Graph App..."
         $clientCredentials = New-Object System.Management.Automation.PSCredential($Application.ClientId,($Application.ClientSecret | ConvertTo-SecureString -AsPlainText -Force))
-        $GraphAppParams = @{
+        $graphAppParams = @{
             Name = 'DUST PS Module Graph API Access'
             ClientCredential = $clientCredentials
             RedirectUri = 'https://localhost/'
             Tenant = $TenantDomain
         }
-        $graphApp = New-GraphApplication @GraphAppParams
-        $tokenSuccess = $false
-        while (!$tokenSuccess) {
-            Write-Output "Requesting application permissions... If you receive an error, close the dialog and it will automatically be attempted again."
-            $authCode = $GraphApp | Get-GraphOauthAuthorizationCode
-            if ($authCode.Success) {
-                $tokenSuccess = $true
-            } else {
-                $tryAgain = Read-Host -Prompt 'Try again? (y/n): [y] '
-                if ([string]::IsNullOrWhiteSpace($tryAgain)) {
-                    Start-Sleep -Milliseconds 5000
-                    throw 'User aborted.'
-                }
-            }
-        }
-        Write-Verbose "Auth Code: $authCode"
-        $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode
-        Write-Verbose "Access Token Details: $graphAccessToken"
         
-        $accessToken = $graphAccessToken.GetAccessToken()
-        Write-Verbose "Access Token: $accessToken"
+        Write-Verbose "Creating Graph app configuration..."
+        $graphApp = New-GraphApplication @graphAppParams
+        Write-Verbose $graphApp
+
+        $authCode = $GraphApp | Get-GraphOauthAuthorizationCode -ForcePrompt admin_consent -verbose
+        $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode -Resource "https://graph.microsoft.com" -Verbose
+
+        [String]$accessToken = $graphAccessToken.GetAccessToken()
+        Write-Verbose "Access Token Details:"
+        Write-Verbose $graphAccessToken
+        Write-Verbose "    Access Token:"
+        Write-Verbose $accessToken
+
         return $accessToken
     } catch {
         Write-Error $_

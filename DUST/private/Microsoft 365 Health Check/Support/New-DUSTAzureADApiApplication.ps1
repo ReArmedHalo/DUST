@@ -23,7 +23,11 @@ Function New-DUSTAzureADApiApplication {
         $dustAzureADApp = New-AzureADApplication -DisplayName 'DUST PS Module Graph API Access' -RequiredResourceAccess $requiredResourceAccess -ReplyUrls 'https://localhost'
         $accessKey = New-AzureADApplicationPasswordCredential -ObjectId $dustAzureADApp.ObjectId -CustomKeyIdentifier 'Access Key' -EndDate ((Get-Date).AddDays(1))
         
-        return @{
+        Write-Verbose "Azure AD Object ID: $($dustAzureADApp.ObjectId)"
+        Write-Verbose "Azure AD App ID / Client ID: $($dustAzureADApp.AppId)"
+        Write-Verbose "Azure AD Client Secret: $($accessKey.Value)"
+
+        return [PSCustomObject]@{
             ObjectId = $dustAzureADApp.ObjectId
             ClientId = $dustAzureADApp.AppId
             ClientSecret = $accessKey.Value
