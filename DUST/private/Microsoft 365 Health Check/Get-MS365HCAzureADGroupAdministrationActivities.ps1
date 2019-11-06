@@ -12,7 +12,7 @@ Function Get-MS365HCAzureADGroupAdministrationActivities {
     )
 
     try {
-        $graphRequestUri = "https://graph.microsoft.com/beta/auditlogs/directoryaudits?`$filter=activityDateTime gt $StartDate and loggedByService eq 'Core Directory' and category eq 'GroupManagement' and (activityDisplayName eq 'Add member to group' or activityDisplayName eq 'Remove member from group' or activityDisplayName eq 'Add owner to group' or activityDisplayName eq 'Remove owner from group' or activityDisplayName eq 'Add group' or activityDisplayName eq 'Delete group')"
+        $graphRequestUri = "https://graph.microsoft.com/v1.0/auditlogs/directoryaudits?`$filter=activityDateTime gt $StartDate and loggedByService eq 'Core Directory' and category eq 'GroupManagement' and (activityDisplayName eq 'Add member to group' or activityDisplayName eq 'Remove member from group' or activityDisplayName eq 'Add owner to group' or activityDisplayName eq 'Remove owner from group' or activityDisplayName eq 'Add group' or activityDisplayName eq 'Delete group')"
         $response = Invoke-WebRequest -Method 'GET' -Uri $graphRequestUri -ContentType "application/json" -Headers @{Authorization = "Bearer $AccessToken"} -ErrorAction Stop
         $json = ($response.Content | ConvertFrom-Json)
         $results = $json.Value

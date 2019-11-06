@@ -34,11 +34,23 @@ Function Get-DUSTAzureADApiApplicationConsent {
         Write-Verbose $graphApp
 
         $authCode = $GraphApp | Get-GraphOauthAuthorizationCode -ForcePrompt admin_consent -verbose
-        $graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode -Resource "https://graph.microsoft.com" -Verbose
+        #$graphAccessToken = Get-GraphOauthAccessToken -AuthenticationCode $authCode -Resource "https://graph.microsoft.com" -Verbose
 
-        [String]$accessToken = $graphAccessToken.GetAccessToken()
+        $bodyParameters = @{
+            client_id = $application.ClientId
+            client_secret = $application.ClientSecret
+            scope = "https://graph.microsoft.com/.default"
+            grant_type = 'client_credentials'
+        }
+
+        Write-Verbose "Making token request: https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"
+        $response = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body $bodyParameters
+        Write-Verbose $response
+        [String]$accessToken = $response.access_token
+
+        #[String]$accessToken = $graphAccessToken.GetAccessToken()
         Write-Verbose "Access Token Details:"
-        Write-Verbose $graphAccessToken
+        Write-Verbose $response
         Write-Verbose "    Access Token:"
         Write-Verbose $accessToken
 

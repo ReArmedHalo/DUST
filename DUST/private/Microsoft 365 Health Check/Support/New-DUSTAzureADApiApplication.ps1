@@ -9,15 +9,19 @@ Function New-DUSTAzureADApiApplication {
 
         # App Roles
         $auditLogAppRole = (Get-AzureADServicePrincipal -All:$true).AppRoles | Where-Object {$_.Value -eq 'AuditLog.Read.All'}
+        $directoryAppRole = (Get-AzureADServicePrincipal -All:$true).AppRoles | Where-Object {$_.Value -eq "Directory.Read.All" -and $_.Description -like "*a signed-in user."}
         $reportsAppRole = (Get-AzureADServicePrincipal -All:$true).AppRoles | Where-Object {$_.Value -eq 'Reports.Read.All'}
 
         # - Microsoft Graph : AuditLog.Read.All
         $auditLogResourceAccess = New-Object -TypeName 'Microsoft.Open.AzureAD.Model.ResourceAccess' -ArgumentList ($auditLogAppRole.Id),'Role'
 
+        # - Microsoft Graph : Directory.Read.All
+        $directoryResourceAccess = New-Object -TypeName 'Microsoft.Open.AzureAD.Model.ResourceAccess' -ArgumentList ($directoryAppRole.Id),'Role'
+
         # - Microsoft Graph : Reports.Read.All
         $reportsResourceAccess = New-Object -TypeName 'Microsoft.Open.AzureAD.Model.ResourceAccess' -ArgumentList ($reportsAppRole.Id),'Role'
 
-        $requiredResourceAccess.ResourceAccess = $auditLogResourceAccess, $reportsResourceAccess
+        $requiredResourceAccess.ResourceAccess = $auditLogResourceAccess, $directoryResourceAccess, $reportsResourceAccess
         
         # - Application Registration and Access Key
         $dustAzureADApp = New-AzureADApplication -DisplayName 'DUST PS Module Graph API Access' -RequiredResourceAccess $requiredResourceAccess -ReplyUrls 'https://localhost'

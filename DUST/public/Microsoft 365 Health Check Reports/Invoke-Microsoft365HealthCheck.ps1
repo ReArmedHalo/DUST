@@ -5,6 +5,8 @@
 
     Inbox forward rules
         RuleFrom blank
+
+    Graph returns data in UTC
 #>
 
 <#
@@ -14,6 +16,12 @@ Function Invoke-Microsoft365HealthCheck {
     [CmdletBinding(DefaultParameterSetName='All')] Param (
         [Parameter(Mandatory)]
         [String] $TenantDomain,
+
+        [Parameter()]
+        [String] $ClientId,
+
+        [Parameter()]
+        [String] $ClientSecret,
 
         # Converts to UTC from users local timezone
         [Parameter()]
@@ -127,19 +135,43 @@ Function Invoke-Microsoft365HealthCheck {
 
         # If we are asking for a report that requires the Graph API, build the app and get administrator approval for permissions
         if ( $azureADRequired ) {
-            # Service Principals
-            $application = New-DUSTAzureADApiApplication
+            if ($ClientId -and $ClientSecret) {
+                $application = [PSCustomObject]@{
+                    ObjectId = $null
+                    ClientId = $ClientId
+                    ClientSecret = $ClientSecret
+                }
 
+                $bodyParameters = @{
+                    client_id = $application.ClientId
+                    client_secret = $application.ClientSecret
+                    scope = "https://graph.microsoft.com/.default"
+                    grant_type = 'client_credentials'
+                }
+        
+                Write-Verbose "Making token request: https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"
+                $response = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token" -Method "POST" -ContentType "application/x-www-form-urlencoded" -Body $bodyParameters
+                $accessToken = $response.access_token
+            } else {
+                # Service Principals
+                $application = New-DUSTAzureADApiApplication
+
+                Write-Verbose 'Application Details:'
+                Write-Verbose "    Object ID: $($application.ObjectId)"
+                Write-Verbose "    Client ID / App ID: $($application.ClientId)"
+                Write-Verbose "    Client Secret: $($application.ClientSecret)"
+
+                # It seems if we don't wait, trying to get consent might throw an error that the application doesn't exist
+                # Not sure if there is a better way to wait to ensure the consent dialog won't error, putting this in as a temporary fix
+                Start-Sleep -Milliseconds 10000
+
+                $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain
+            }
             Write-Verbose 'Application Details:'
             Write-Verbose "    Object ID: $($application.ObjectId)"
             Write-Verbose "    Client ID / App ID: $($application.ClientId)"
             Write-Verbose "    Client Secret: $($application.ClientSecret)"
-
-            # It seems if we don't wait, trying to get consent might throw an error that the application doesn't exist
-            # Not sure if there is a better way to wait to ensure the consent dialog won't error, putting this in as a temporary fix
-            Start-Sleep -Milliseconds 10000
-
-            $accessToken = Get-DUSTAzureADApiApplicationConsent -Application $application -TenantDomain $TenantDomain
+            Write-Verbose "    Access Token: $($accessToken)"
         }
 
         #region Call Report Functions
@@ -187,14 +219,16 @@ Function Invoke-Microsoft365HealthCheck {
         #endregion Call Report Functions
 
         # -- Take down the temporary application, if required
-        if ($All -or $application) {
-            Write-Verbose 'Taking down Azure AD application'
+        if (($All -or $application) -and $application.ObjectId) {
+            Write-Verbose "Taking down Azure AD application with ObjectId: $($application.ObjectId)"
             Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
         }
     } catch {
         # Try and take down the temporary application
-        Write-Verbose "Taking down Azure AD application with ObjectId: $($azureApp.ObjectId)"
-        Remove-DUSTAzureADApiApplication -ObjectId $azureApp.ObjectId
+        if ($application.ObjectId) {
+            Write-Verbose "Taking down Azure AD application with ObjectId: $($application.ObjectId)"
+            Remove-DUSTAzureADApiApplication -ObjectId $application.ObjectId
+        }
         Write-Verbose 'Disconnecting any remote PowerShell sessions...'
 
         Remove-BrokenOrClosedDUSTPSSessions
