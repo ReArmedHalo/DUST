@@ -1,11 +1,11 @@
 ---
-external help file: Connect-ExchangeOnline-help.xml
+external help file: Connect-DUSTExchangeOnline-help.xml
 Module Name: DUST
-online version: https://rearmedhalo.github.io/DUST/Connect-ExchangeOnline.html
+online version: https://rearmedhalo.github.io/DUST/Connect-DUSTExchangeOnline.html
 schema: 2.0.0
 ---
 
-# Connect-ExchangeOnline
+# Connect-DUSTExchangeOnline
 
 ## SYNOPSIS
 Establish a connection to Exchange Online
@@ -14,12 +14,12 @@ Establish a connection to Exchange Online
 
 ### Direct (Default)
 ```
-Connect-ExchangeOnline [-Delegated] [<CommonParameters>]
+Connect-DUSTExchangeOnline [-Delegated] [<CommonParameters>]
 ```
 
 ### Delegated
 ```
-Connect-ExchangeOnline [-Delegated] [-ClientDomain] <String> [-Credential] <PSCredential> [<CommonParameters>]
+Connect-DUSTExchangeOnline [-Delegated] [-ClientDomain] <String> [-Credential] <PSCredential> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,12 +29,12 @@ Handles delegated access and supports MFA access (only with direct connection)
 
 ### Direct Connection
 ```
-Connect-ExchangeOnline
+Connect-DUSTExchangeOnline
 ```
 
 ### Delegated Access
 ```
-Connect-ExchangeOnline -Delegated -ClientDomain fabrikam.com
+Connect-DUSTExchangeOnline -Delegated -ClientDomain fabrikam.com
 ```
 
 ## PARAMETERS

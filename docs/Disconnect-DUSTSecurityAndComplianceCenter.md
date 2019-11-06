@@ -1,19 +1,19 @@
 ---
-external help file: Disconnect-SecurityAndComplianceCenter-help.xml
+external help file: Disconnect-DUSTSecurityAndComplianceCenter-help.xml
 Module Name: DUST
-online version: https://rearmedhalo.github.io/DUST/Disconnect-SecurityAndComplianceCenter.html
+online version: https://rearmedhalo.github.io/DUST/Disconnect-DUSTSecurityAndComplianceCenter.html
 schema: 2.0.0
 ---
 
-# Disconnect-SecurityAndComplianceCenter
+# Disconnect-DUSTSecurityAndComplianceCenter
 
 ## SYNOPSIS
 {{Fill in the Synopsis}}
 
 ## SYNTAX
 
-```
-Disconnect-SecurityAndComplianceCenter [<CommonParameters>]
+```powershell
+Disconnect-DUSTSecurityAndComplianceCenter [<CommonParameters>]
 ```
 
 ## DESCRIPTION

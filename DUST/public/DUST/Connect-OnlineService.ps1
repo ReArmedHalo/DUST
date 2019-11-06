@@ -89,11 +89,11 @@ Function Connect-OnlineService {
                 # Azure AD has a different method of handling delegated access, this one supports MFA!
                 Connect-AzureAD -TenantId $PSBoundParameters.TenantId
             } else {
-                $cmd = Get-Command "Connect-$Service"
+                $cmd = Get-Command "Connect-DUST$Service"
                 & $cmd -Delegated -ClientDomain ($PSBoundParameters.ClientDomain) -Credential ($PSBoundParameters.Credential)
             }
         } else {
-            & (Get-Command "Connect-$Service")
+            & (Get-Command "Connect-DUST$Service")
         }
     }
 }

@@ -9,4 +9,5 @@ foreach ($import in @($public + $private)) {
     }
 }
 
-Export-ModuleMember -Function $public.BaseName
+New-Alias -Name Connect-DUSTAzureAD -Value Connect-AzureAD
+Export-ModuleMember -Alias Connect-DUSTAzureAD -Function $public.BaseName -Verbose

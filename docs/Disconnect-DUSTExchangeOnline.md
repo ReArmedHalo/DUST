@@ -1,19 +1,19 @@
 ---
-external help file: Disconnect-ExchangeOnline-help.xml
+external help file: Disconnect-DUSTExchangeOnline-help.xml
 Module Name: DUST
-online version: https://rearmedhalo.github.io/DUST/Disconnect-ExchangeOnline.html
+online version: https://rearmedhalo.github.io/DUST/Disconnect-DUSTExchangeOnline.html
 schema: 2.0.0
 ---
 
-# Disconnect-ExchangeOnline
+# Disconnect-DUSTExchangeOnline
 
 ## SYNOPSIS
 {{Fill in the Synopsis}}
 
 ## SYNTAX
 
-```
-Disconnect-ExchangeOnline [<CommonParameters>]
+```powershell
+Disconnect-DUSTExchangeOnline [<CommonParameters>]
 ```
 
 ## DESCRIPTION

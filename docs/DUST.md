@@ -13,28 +13,25 @@ DUST is a set of functions to ease administration and access to various Microsof
 Currently, this module really only works on Windows as certain dependencies only work on Windows. For example, MFA authentication in the external modules such as the Exchange Online module only have Windows-based installs.
 
 ## DUST Cmdlets
-### [Connect-AzureADv2](Connect-AzureADv2.md)
-{{Manually Enter Connect-AzureADv2 Description Here}}
-
 ### [Connect-ClientAzureADTenant](Connect-ClientAzureADTenant.md)
 {{Manually Enter Connect-ClientAzureADTenant Description Here}}
 
-### [Connect-ExchangeOnline](Connect-ExchangeOnline.md)
-{{Manually Enter Connect-ExchangeOnline Description Here}}
+### [Connect-DUSTExchangeOnline](Connect-DUSTExchangeOnline.md)
+{{Manually Enter Connect-DUSTExchangeOnline Description Here}}
 
 ### [Connect-OnlineService](Connect-OnlineService.md)
 Handles calling the proper connection handler for a given service.
 
-### [Connect-SecurityAndComplianceCenter](Connect-SecurityAndComplianceCenter.md)
+### [Connect-DUSTSecurityAndComplianceCenter](Connect-DUSTSecurityAndComplianceCenter.md)
 {{Manually Enter Connect-SecurityAndComplianceCenter Description Here}}
 
 ### [ConvertTo-ImmutableId](ConvertTo-ImmutableId.md)
 {{Manually Enter ConvertTo-ImmutableId Description Here}}
 
-### [Disconnect-ExchangeOnline](Disconnect-ExchangeOnline.md)
-{{Manually Enter Disconnect-ExchangeOnline Description Here}}
+### [Disconnect-DUSTExchangeOnline](Disconnect-DUSTExchangeOnline.md)
+{{Manually Enter DisConnect-DUSTExchangeOnline Description Here}}
 
-### [Disconnect-SecurityAndComplianceCenter](Disconnect-SecurityAndComplianceCenter.md)
+### [Disconnect-DUSTSecurityAndComplianceCenter](Disconnect-DUSTSecurityAndComplianceCenter.md)
 {{Manually Enter Disconnect-SecurityAndComplianceCenter Description Here}}
 
 ### [Find-AzureTenantIdByName](Find-AzureTenantIdByName.md)

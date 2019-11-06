@@ -1,7 +1,7 @@
 <#
-    .EXTERNALHELP ..\..\Connect-SecurityAndComplianceCenter-help.xml
+    .EXTERNALHELP ..\..\Connect-DUSTSecurityAndComplianceCenter-help.xml
 #>
-Function Connect-SecurityAndComplianceCenter {
+Function Connect-DUSTSecurityAndComplianceCenter {
     [CmdletBinding()] Param ()
 
     Remove-BrokenOrClosedDUSTPSSessions

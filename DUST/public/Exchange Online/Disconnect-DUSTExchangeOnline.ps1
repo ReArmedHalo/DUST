@@ -1,7 +1,7 @@
 <#
-    .EXTERNALHELP ..\..\Disconnect-ExchangeOnline-help.xml
+    .EXTERNALHELP ..\..\Disconnect-DUSTExchangeOnline-help.xml
 #>
-Function Disconnect-ExchangeOnline {
+Function Disconnect-DUSTExchangeOnline {
     [CmdletBinding()] Param ()
 
     Get-PSSession | Where-Object {$_.Name -like 'DUST-EXO'} | Remove-PSSession
