@@ -23,16 +23,16 @@ Currently, this module really only works on Windows as certain dependencies only
 Handles calling the proper connection handler for a given service.
 
 ### [Connect-DUSTSecurityAndComplianceCenter](Connect-DUSTSecurityAndComplianceCenter.md)
-{{Manually Enter Connect-SecurityAndComplianceCenter Description Here}}
+{{Manually Enter Connect-DUSTSecurityAndComplianceCenter Description Here}}
 
 ### [ConvertTo-ImmutableId](ConvertTo-ImmutableId.md)
 {{Manually Enter ConvertTo-ImmutableId Description Here}}
 
 ### [Disconnect-DUSTExchangeOnline](Disconnect-DUSTExchangeOnline.md)
-{{Manually Enter DisConnect-DUSTExchangeOnline Description Here}}
+{{Manually Enter Disconnect-DUSTExchangeOnline Description Here}}
 
 ### [Disconnect-DUSTSecurityAndComplianceCenter](Disconnect-DUSTSecurityAndComplianceCenter.md)
-{{Manually Enter Disconnect-SecurityAndComplianceCenter Description Here}}
+{{Manually Enter Disconnect-DUSTSecurityAndComplianceCenter Description Here}}
 
 ### [Find-AzureTenantIdByName](Find-AzureTenantIdByName.md)
 {{Manually Enter Find-AzureTenantIdByName Description Here}}

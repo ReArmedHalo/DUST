@@ -1,19 +1,19 @@
 ---
-external help file: Connect-SecurityAndComplianceCenter-help.xml
+external help file: Connect-DUSTSecurityAndComplianceCenter-help.xml
 Module Name: DUST
-online version: https://rearmedhalo.github.io/DUST/Connect-SecurityAndComplianceCenter.html
+online version: https://rearmedhalo.github.io/DUST/Connect-DUSTSecurityAndComplianceCenter.html
 schema: 2.0.0
 ---
 
-# Connect-SecurityAndComplianceCenter
+# Connect-DUSTSecurityAndComplianceCenter
 
 ## SYNOPSIS
 {{Fill in the Synopsis}}
 
 ## SYNTAX
 
-```
-Connect-SecurityAndComplianceCenter [<CommonParameters>]
+```powershell
+Connect-DUSTSecurityAndComplianceCenter [<CommonParameters>]
 ```
 
 ## DESCRIPTION
