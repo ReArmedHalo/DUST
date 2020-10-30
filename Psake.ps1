@@ -48,7 +48,7 @@ Task Test -Depends Init, BuildDocs  {
     $pesterParameters = @{
         Path         = "$ProjectRoot\tests"
         PassThru     = $true
-        OutputFormat = "NUnitXml" 
+        Output       = "Normal" 
         OutputFile   = "$ProjectRoot\$TestFile"
     }
     if (-Not $IsWindows) { $pesterParameters["ExcludeTag"] = "WindowsOnly" }
