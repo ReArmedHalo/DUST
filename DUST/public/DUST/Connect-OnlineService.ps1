@@ -6,94 +6,158 @@ Function Connect-OnlineService {
     Param (
         [Parameter(ParameterSetName='Direct',Mandatory,Position=0)]
         [Parameter(ParameterSetName='Delegated',Mandatory,Position=0)]
-        [ValidateSet('AzureAD','ExchangeOnline','MsolService','SecurityAndComplianceCenter')]
+        [Parameter(ParameterSetName='FindDelegated',Mandatory,Position=0)]
+        [ValidateSet(
+            'AzureAD',
+            'ExchangeOnline',
+            'SecurityAndCompliance',
+            'SharePoint',
+            'Teams'
+        )]
         [String] $Service
     )
 
     DynamicParam {
+        $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+
         # --- AzureAD
         if ($Service -eq 'AzureAD') {
-            # Delegated attribute
-            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $delegatedAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $delegatedAttribute.Position = 1
-            $delegatedAttribute.ParameterSetName = 'Delegated'
-            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-            $attributeCollection.Add($delegatedAttribute)
-            $delegatedParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Delegated', [Switch], $attributeCollection)
-            $RuntimeParameterDictionary.Add('Delegated', $delegatedParam)
-
-            # TenantId attribute
+            # TenantId
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $tenantIdAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $tenantIdAttribute.Position = 2
+            $tenantIdAttribute.Position = 1
             $tenantIdAttribute.ParameterSetName = 'Delegated'
-            $tenantIdAttribute.Mandatory = $true
             $tenantIdAttribute.ValueFromPipelineByPropertyName = $true
             $parameterAlias = New-Object System.Management.Automation.AliasAttribute -ArgumentList 'CustomerContextId'
             $attributeCollection.Add($tenantIdAttribute)
             $attributeCollection.Add($parameterAlias)
-            $tenantIdParam = New-Object System.Management.Automation.RuntimeDefinedParameter('TenantId', [String], $attributeCollection)
-            $RuntimeParameterDictionary.Add('TenantId', $tenantIdParam)
+            $tenantIdParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('TenantId', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('TenantId', $tenantIdParameter)
+
+            # FindTenant
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $findTenantAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $findTenantAttribute.Position = 1
+            $findTenantAttribute.ParameterSetName = 'FindDelegated'
+            $findTenantAttribute.HelpMessage = "Interactively find a delegated tenant to connect to. This only works for partners such Syndication Partners, Breadth Partners, and Reseller Partners. "
+            $attributeCollection.Add($findTenantAttribute)
+            $findTenantParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('FindTenant', [Switch], $attributeCollection)
+            $RuntimeParameterDictionary.Add('FindTenant', $findTenantParameter)
         }
 
         # --- ExchangeOnline
         if ($Service -eq 'ExchangeOnline') {
-            # Delegated
+            # DelegatedOrganization
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $delegatedAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $delegatedAttribute.Position = 1
-            $delegatedAttribute.ParameterSetName = 'Delegated'
-            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-            $attributeCollection.Add($delegatedAttribute)
-            $delegatedParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Delegated', [Switch], $attributeCollection)
-            $RuntimeParameterDictionary.Add('Delegated', $delegatedParam)
-
-            # ClientDomain
+            $delegatedOrganizationAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $delegatedOrganizationAttribute.Position = 1
+            $delegatedOrganizationAttribute.ParameterSetName = 'Delegated'
+            $delegatedOrganizationAttribute.HelpMessage = "The client domain you wish to connect to via delegated rights. This is only required if you are connecting to a tenant that isn't your home tenant."
+            $attributeCollection.Add($delegatedOrganizationAttribute)
+            $delegatedOrganizationParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('DelegatedOrganization', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('DelegatedOrganization', $delegatedOrganizationParameter)
+        }
+        
+        # --- Teams
+        if ($Service -eq 'Teams') {
+            # AuthenticationUrl
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $clientDomainAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $clientDomainAttribute.Position = 2
-            $clientDomainAttribute.ParameterSetName = 'Delegated'
-            $clientDomainAttribute.Mandatory = $true
-            $attributeCollection.Add($clientDomainAttribute)
-            $clientDomainParam = New-Object System.Management.Automation.RuntimeDefinedParameter('ClientDomain', [String], $attributeCollection)
-            $RuntimeParameterDictionary.Add('ClientDomain', $clientDomainParam)
+            $tenantIdAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $tenantIdAttribute.Position = 1
+            $tenantIdAttribute.ParameterSetName = 'Delegated'
+            $tenantIdAttribute.HelpMessage = "The Microsoft 365 Tenant Id you wish to connect to via delegated rights. This is only required if you are connecting to a tenant that isn't your home tenant."
+            $attributeCollection.Add($tenantIdAttribute)
+            $tenantIdParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('TenantId', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('TenantId', $tenantIdParameter)
         }
 
-        # --- MsolService
-        # We are not supporting MsolService at this time for delegation
+        # ===== Service specific parameters (Non-delegated)
 
-        # --- SecurityAndComplianceCenter
-        # Delegation not supported by SCC
+        # --- SharePoint
+        if ($Service -eq 'SharePoint') {
+            # AuthenticationUrl
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $adminUriAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $adminUriAttribute.Position = 1
+            $adminUriAttribute.ParameterSetName = 'Direct'
+            $adminUriAttribute.HelpMessage = "The SharePoint admin URL in the format of: https://orgName-admin.sharepoint.com"
+            $attributeCollection.Add($adminUriAttribute)
+            $adminUriParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('Uri', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('Uri', $adminUriParameter)
+        }
 
-        # Credential
-        <#
-        $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-        $credentialAttribute = New-Object System.Management.Automation.ParameterAttribute
-        $credentialAttribute.Position = 3
-        $credentialAttribute.ParameterSetName = "Delegated"
-        $credentialAttribute.Mandatory = $true
-        $attributeCollection.Add($credentialAttribute)
-        $credentialParam = New-Object System.Management.Automation.RuntimeDefinedParameter('Credential', [PSCredential], $attributeCollection)
-        $RuntimeParameterDictionary.Add('Credential', $credentialParam)
-        #>
-
-        if ($RuntimeParameterDictionary) {
+        if ($RuntimeParameterDictionary.Count -gt 0) {
             return $RuntimeParameterDictionary
         }
     }
 
     Process {
+        if ($PSBoundParameters.FindTenant) {
+            # Interactively find a delegated tenant
+            try { Disconnect-AzureAD -ErrorAction SilentlyContinue } catch {}
+
+            try {
+                Connect-AzureAD -ErrorAction Stop
+                $account = Get-AzureADCurrentSessionInfo | Select-Object Account
+                $selectedTenant = Get-AzureADContract | Select-Object DisplayName,DefaultDomainName,CustomerContextId | Sort-Object -Property DisplayName  | Out-GridView -OutputMode Single -Title "Select a tenant to connect to."
+                
+                if ($selectedTenant) {
+                    Disconnect-AzureAD
+                    try {
+                        Connect-AzureAD -AccountId $account.Account -TenantId $selectedTenant.CustomerContextId
+                    }
+                    catch [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException],[Microsoft.IdentityModel.Clients.ActiveDirectory.AdalServiceException] {
+                        Write-Error -Message "Authentication incomplete or failed for Azure AD!" -Exception [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException] -ErrorAction Stop
+                    }
+                    return
+                } else {
+                    Write-Error -Message "You did not select a tenant. Aborting delegated authentication... (You are still connected to your home tenant)" -ErrorAction Stop
+                }    
+            }
+            catch [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException],[Microsoft.IdentityModel.Clients.ActiveDirectory.AdalServiceException] {
+                Write-Error -Message "Authentication incomplete or failed for Azure AD!" -Exception [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException] -ErrorAction Stop
+            }     
+        }
+
         if ($PSBoundParameters.Delegated) {
-            if ($Service -eq 'AzureAD') {
-                # Azure AD has a different method of handling delegated access, this one supports MFA!
-                Connect-AzureAD -TenantId $PSBoundParameters.TenantId
-            } else {
-                $cmd = Get-Command "Connect-DUST$Service"
-                & $cmd -Delegated -ClientDomain ($PSBoundParameters.ClientDomain) -Credential ($PSBoundParameters.Credential)
+            switch ($Service) {
+                'AzureAd' { 
+                    Connect-AzureAD -TenantId $PSBoundParameters.TenantId
+                }
+                'ExchangeOnline' {
+                    Connect-ExchangeOnline -DelegatedOrganization $PSBoundParameters.DelegatedOrganization
+                }
+                'SharePoint' { # Same for direct
+                    Connect-SPOService -Uri  $PSBoundParameters.Uri
+                }
+                'Teams' {
+                    Connect-MicrosoftTeams -TenantId $PSBoundParameters.TenantId
+                }
+                Default {
+                    Write-Error 'You should never see this, but if you do, report to https://github.com/ReArmedHalo/DUST'
+                }
             }
         } else {
-            & (Get-Command "Connect-DUST$Service")
+            switch ($Service) {
+                'AzureAD' { 
+                    Connect-AzureAD
+                }
+                'ExchangeOnline' {
+                    Connect-ExchangeOnline
+                }
+                'SecurityAndCompliance' {
+                    Write-Error 'Not yet implemented!'
+                }
+                'SharePoint' { # Same for delegated
+                    Connect-SPOService -Uri  $PSBoundParameters.Uri
+                }
+                'Teams' {
+                    Connect-MicrosoftTeams
+                }
+                Default {
+                    Write-Error 'You should never see this, but if you do, report to https://github.com/ReArmedHalo/DUST'
+                }
+            }
         }
     }
 }
