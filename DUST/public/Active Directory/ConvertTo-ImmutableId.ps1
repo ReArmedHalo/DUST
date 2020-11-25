@@ -1,6 +1,8 @@
 <#
     .EXTERNALHELP ..\..\ConvertTo-ImmutableId-help.xml
 #>
+
+# TODO: Consistency
 Function ConvertTo-ImmutableId {
     [OutputType([System.String])]
     [cmdletbinding()]Param(

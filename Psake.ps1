@@ -48,7 +48,7 @@ Task Test -Depends Init, BuildDocs  {
     $pesterParameters = @{
         Path         = "$ProjectRoot\tests"
         PassThru     = $true
-        Output       = "Normal" 
+        Output       = "Normal"
         OutputFile   = "$ProjectRoot\$TestFile"
     }
     if (-Not $IsWindows) { $pesterParameters["ExcludeTag"] = "WindowsOnly" }

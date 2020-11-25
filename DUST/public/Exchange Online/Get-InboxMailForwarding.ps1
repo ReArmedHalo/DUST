@@ -1,6 +1,8 @@
 <#
     .EXTERNALHELP ..\..\Get-InboxMailForwarding-help.xml
 #>
+
+# TODO: Filtering
 Function Get-InboxMailForwarding {
     [CmdletBinding()] Param (
         [Parameter()]

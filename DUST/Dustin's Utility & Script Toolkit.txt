@@ -15,3 +15,11 @@ $searcher = [adsisearcher]"(samaccountname=$env:USERNAME)"
 $searcher.FindOne().Properties.mail
 
 ([adsi]"LDAP://$(whoami /fqdn)").mail
+
+
+
+Install-Module -Name MicrosoftTeams
+Install-Module -Name Microsoft.Online.SharePoint.PowerShell
+
+
+$PSItem.ScriptStackTrace

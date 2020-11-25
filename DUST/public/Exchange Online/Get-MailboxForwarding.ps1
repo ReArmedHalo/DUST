@@ -24,13 +24,17 @@ Function Get-MailboxForwarding {
     $mailboxForwards = $mailboxesToSearch | Where-Object {$_.ForwardingSmtpAddress -gt ''} | Select-Object UserPrincipalName,ForwardingSmtpAddress,DeliverToMailboxAndForward
 
     ForEach ($rule in $mailboxForwards) {
-        $forwarding = [MailboxForwardingRule]@{
-            Mailbox = $rule.UserPrincipalName
-            ForwardTo = $rule.ForwardingSmtpAddress
-            DeliverToMailboxAndForward = $rule.DeliverToMailboxAndForward
-        }
+        if (![string]::IsNullOrEmpty($rule.ForwardTo) -or ![string]::IsNullOrEmpty($rule.DeliverToMailboxAndForward)) {
 
-        $outputData += $forwarding
+            # TODO: Get rid of custom classes?
+            $forwarding = [MailboxForwardingRule]@{
+                Mailbox = $rule.UserPrincipalName
+                ForwardTo = $rule.ForwardingSmtpAddress
+                DeliverToMailboxAndForward = $rule.DeliverToMailboxAndForward
+            }
+    
+            $outputData += $forwarding
+        }
     }
 
     return $outputData
