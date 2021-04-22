@@ -27,5 +27,4 @@ Function Get-MFAReport {
         $percentComplete += $stepInterval
         $i++
     }
-
 }

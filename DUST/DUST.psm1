@@ -1,6 +1,6 @@
 $public = (Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -Recurse -ErrorAction SilentlyContinue)
 
-foreach ($import in @($public + $private)) {
+foreach ($import in @($public)) {
     try {
         . $import.fullname
     } catch {
