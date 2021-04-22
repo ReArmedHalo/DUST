@@ -130,7 +130,7 @@ Function Connect-OnlineService {
 
                 try {
                     Connect-AzureAD -ErrorAction Stop
-                    $selectedTenant = Get-AzureADContract | Select-Object DisplayName,DefaultDomainName,CustomerContextId | Sort-Object -Property DisplayName  | Out-GridView -OutputMode Single -Title "Select a tenant to connect to."
+                    $selectedTenant = Get-AzureADContract -All:$true | Select-Object DisplayName,DefaultDomainName,CustomerContextId | Sort-Object -Property DisplayName  | Out-GridView -OutputMode Single -Title "Select a tenant to connect to."
                     
                     if ($selectedTenant) {
                         Disconnect-AzureAD
