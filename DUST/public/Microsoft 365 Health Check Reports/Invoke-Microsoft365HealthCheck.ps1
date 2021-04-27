@@ -110,7 +110,11 @@ Function Invoke-Microsoft365HealthCheck {
             $azureADRequired = $true
             Write-Verbose 'Reports requested require access to the Azure Graph API, connecting to AzureAD'
             try {
-                Connect-AzureAD -ErrorAction Stop | Out-Null
+                if ($ClientId -and $ClientSecret) {
+                    Write-Verbose 'Using client credentials instead!'
+                } else {
+                    Connect-AzureAD -ErrorAction Stop | Out-Null
+                }
             } catch {
                 throw "Failed to connect to Azure AD. Will not continue."
             }
@@ -126,7 +130,11 @@ Function Invoke-Microsoft365HealthCheck {
         ) {
             Write-Verbose 'Reports requested require Exchange Online, connecting to Exchange Online'
             try {
-                Connect-OnlineService -Service ExchangeOnline -ErrorAction Stop | Out-Null   
+                if ($ClientId -and $ClientSecret) {
+                    Write-Verbose 'Using client credentials instead!'
+                } else {
+                    Connect-OnlineService -Service ExchangeOnline -ErrorAction Stop | Out-Null   
+                }
             } catch {
                 throw "Failed to connect to Exchange Online. Will not continue."
             }

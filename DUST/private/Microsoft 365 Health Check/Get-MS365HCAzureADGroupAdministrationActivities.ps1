@@ -32,8 +32,15 @@ Function Get-MS365HCAzureADGroupAdministrationActivities {
             
             if (($record.activityDisplayName -like '*from group') -or ($record.activityDisplayName -like '*to group')) {
                 # Add/Remove members
-                $entry.targetGroup = (Get-AzureADGroup -ObjectId ($record.targetResources | Where-Object {$_.type -eq 'Group'}).id).DisplayName
-            } else {
+                if ($record.activityDisplayName -like '*to group') { # Add
+                    $entry.targetGroup = ((($record.targetResources | Where-Object {$_.type -eq 'User'}).modifiedProperties | Where-Object {$_.DisplayName -eq 'Group.DisplayName'}).newValue) -replace '"', ""
+                }
+                if ($record.activityDisplayName -like '*from group') { # Remove
+                    $entry.targetGroup = ((($record.targetResources | Where-Object {$_.type -eq 'User'}).modifiedProperties | Where-Object {$_.DisplayName -eq 'Group.DisplayName'}).oldValue) -replace '"', ""
+                }
+            }
+
+            if (($record.activityDisplayName -like 'Add group') -or ($record.activityDisplayName -like 'Delete group')) {
                 # Add/Delete group
                 $entry.targetGroup = ($record.targetResources | Where-Object {$_.type -eq 'Group'}).DisplayName
             }
