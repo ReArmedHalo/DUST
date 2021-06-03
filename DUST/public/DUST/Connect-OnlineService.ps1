@@ -8,43 +8,17 @@ Function Connect-OnlineService {
         [Parameter(ParameterSetName='Delegated',Mandatory,Position=0)]
         [Parameter(ParameterSetName='FindDelegated',Mandatory,Position=0)]
         [ValidateSet(
-            'Az',
-            'AzureAD',
-            'ExchangeOnline',
-            'SecurityAndCompliance',
-            'SharePoint',
-            'Teams'
+            'AzureAD', # ✔
+            'ExchangeOnline', # ✔
+            'SecurityAndCompliance', # ✔
+            'SharePoint', # ✔
+            'Teams' # ✔
         )]
         [String] $Service
     )
 
     DynamicParam {
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-
-        # --- Az
-        if ($Service -eq 'Az') {
-            # Tenant
-            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $tenantAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $tenantAttribute.Position = 1
-            $tenantAttribute.ParameterSetName = 'Delegated'
-            $tenantAttribute.ValueFromPipelineByPropertyName = $true
-            $parameterAlias = New-Object System.Management.Automation.AliasAttribute -ArgumentList 'CustomerContextId'
-            $attributeCollection.Add($tenantAttribute)
-            $attributeCollection.Add($parameterAlias)
-            $tenantIdParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('Tenant', [String], $attributeCollection)
-            $RuntimeParameterDictionary.Add('Tenant', $tenantIdParameter)
-
-            # FindTenant
-            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-            $findTenantAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $findTenantAttribute.Position = 1
-            $findTenantAttribute.ParameterSetName = 'FindDelegated'
-            $findTenantAttribute.HelpMessage = "Interactively find a delegated tenant to connect to. This only works for partners such Syndication Partners, Breadth Partners, and Reseller Partners. "
-            $attributeCollection.Add($findTenantAttribute)
-            $findTenantParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('FindTenant', [Switch], $attributeCollection)
-            $RuntimeParameterDictionary.Add('FindTenant', $findTenantParameter)
-        }
         
         # --- AzureAD
         if ($Service -eq 'AzureAD') {
@@ -69,6 +43,16 @@ Function Connect-OnlineService {
             $attributeCollection.Add($findTenantAttribute)
             $findTenantParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('FindTenant', [Switch], $attributeCollection)
             $RuntimeParameterDictionary.Add('FindTenant', $findTenantParameter)
+
+            # AzureEnvironmentName
+            $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+            $azureEnvironmentNameAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $azureEnvironmentNameAttribute.Position = 2
+            $azureEnvironmentNameAttribute.HelpMessage = "Specifies the name of the Azure environment. The acceptable values for this parameter are: AzureCloud (Default), AzureChinaCloud, AzureUSGovernment, AzureGermanyCloud."
+            $attributeCollection.Add((New-Object System.Management.Automation.ValidateSetAttribute(@('AzureCloud','AzureChinaCloud','AzureUSGovernment','AzureGermanyCloud'))))
+            $attributeCollection.Add($azureEnvironmentNameAttribute)
+            $azureEnvironmentNameParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('AzureEnvironmentName', [String], $attributeCollection)
+            $RuntimeParameterDictionary.Add('AzureEnvironmentName', $azureEnvironmentNameParameter)
         }
 
         # --- ExchangeOnline
@@ -118,104 +102,95 @@ Function Connect-OnlineService {
     }
 
     Process {
+        if (!$PSBoundParameters.AzureEnvironmentName) {
+            # Hack, setting default value on parameter doesn't make it's way down here
+            $PSBoundParameters.AzureEnvironmentName = 'AzureCloud'
+        }
+        
         if ($PSBoundParameters.FindTenant) {
             # Interactively find a delegated tenant
 
-            if ($Service -eq 'Az') {
-                if (!(Get-InstalledModule -Name 'Az' -ErrorAction SilentlyContinue)) {
-                    Write-Error "Az module not installed! Please install the module from an elevated PowerShell using 'Install-Module Az -AllowClobber -Force'" -ErrorAction Stop
-                }
-                
-                try { Disconnect-AzureAD -ErrorAction SilentlyContinue; Disconnect-AzAccount -ErrorAction SilentlyContinue } catch {}
-
-                try {
-                    Connect-AzureAD -ErrorAction Stop
-                    $selectedTenant = Get-AzureADContract -All:$true | Select-Object DisplayName,DefaultDomainName,CustomerContextId | Sort-Object -Property DisplayName  | Out-GridView -OutputMode Single -Title "Select a tenant to connect to."
-                    
-                    if ($selectedTenant) {
-                        Disconnect-AzureAD
-                        try {
-                            Connect-AzAccount -Tenant $selectedTenant.CustomerContextId -ErrorAction Stop
-                        }
-                        catch [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException],[Microsoft.IdentityModel.Clients.ActiveDirectory.AdalServiceException] {
-                            Write-Error -Message "Authentication incomplete or failed for Azure AD!" -Exception [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException] -ErrorAction Stop
-                        }
-                    } else {
-                        Write-Error -Message "You did not select a tenant. Aborting delegated authentication... (You are still connected to your home tenant)" -ErrorAction Stop
-                    }    
-                }
-                catch [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException],[Microsoft.IdentityModel.Clients.ActiveDirectory.AdalServiceException] {
-                    Write-Error -Message "Authentication incomplete or failed for Azure AD!" -Exception [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException] -ErrorAction Stop
-                }
-            }
-
             if ($Service -eq 'AzureAD') {
-                try { Disconnect-AzureAD -ErrorAction SilentlyContinue } catch {}
+                Write-Verbose "Azure AD Environment: $($PSBoundParameters.AzureEnvironmentName)"
+                Resolve-DUSTDependency AzureAD
 
                 try {
-                    Connect-AzureAD -ErrorAction Stop
+                    Write-Verbose "Connected to Azure AD! As we are not sure if this is the users home tenant, disconnecting..." # TODO: Can we determine this and avoid a reconnect?
+                    Get-AzureADTenantDetail # GOTO: Catch if not connected
+                    Disconnect-AzureAD
+                } catch [Microsoft.Open.Azure.AD.CommonLibrary.AadNeedAuthenticationException] {
+                    Write-Verbose "Not connected to Azure AD! (This is good)"
+                }
+
+                try {
+                    Write-Verbose "Connecting to home tenant..."
+                    Connect-AzureAD
                     $account = Get-AzureADCurrentSessionInfo | Select-Object Account
-                    $selectedTenant = Get-AzureADContract -All:$true | Select-Object DisplayName,DefaultDomainName,CustomerContextId | Sort-Object -Property DisplayName  | Out-GridView -OutputMode Single -Title "Select a tenant to connect to."
+                    $selectedTenant = Get-AzureADContract -All:$true | Select-Object DisplayName,DefaultDomainName,CustomerContextId | Sort-Object -Property DisplayName | Out-GridView -OutputMode Single -Title "Select a tenant to connect to."
                     
                     if ($selectedTenant) {
+                        Write-Verbose "User selected: $($selectedTenant.defaultDomainName)"
                         Disconnect-AzureAD
-                        try {
-                            Connect-AzureAD -AccountId $account.Account -TenantId $selectedTenant.CustomerContextId -ErrorAction Stop
-                        }
-                        catch [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException],[Microsoft.IdentityModel.Clients.ActiveDirectory.AdalServiceException] {
-                            Write-Error -Message "Authentication incomplete or failed for Azure AD!" -Exception [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException] -ErrorAction Stop
-                        }
+                        Write-Verbose "Connecting to $($selectedTenant.DisplayName) - $($selectedTenant.defaultDomainName) - $($selectedTenant.CustomerContextId)"
+                        Connect-AzureAD -AccountId $account.Account -TenantId $selectedTenant.CustomerContextId -AzureEnvironmentName $AzureEnvironmentName
                     } else {
-                        Write-Error -Message "You did not select a tenant. Aborting delegated authentication... (You are still connected to your home tenant)" -ErrorAction Stop
-                    }    
-                }
-                catch [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException],[Microsoft.IdentityModel.Clients.ActiveDirectory.AdalServiceException] {
-                    Write-Error -Message "Authentication incomplete or failed for Azure AD!" -Exception [Microsoft.Open.Azure.AD.CommonLibrary.AadAuthenticationFailedException] -ErrorAction Stop
+                        throw "You did not select a tenant. Aborting delegated authentication... (You are still connected to your home tenant)"
+                    }
+                } catch {
+                    throw
                 }
             } 
         }
 
         if ($PSBoundParameters.Delegated) {
             switch ($Service) {
-                'AzureAd' { 
-                    Connect-AzureAD -TenantId $PSBoundParameters.TenantId
+                'AzureAD' {
+                    Write-Verbose "Azure AD Environment: $($PSBoundParameters.AzureEnvironmentName)"
+                    Resolve-DUSTDependency AzureAD
+                    Connect-AzureAD -TenantId $PSBoundParameters.TenantId -AzureEnvironmentName $PSBoundParameters.AzureEnvironmentName
                 }
                 'ExchangeOnline' {
+                    Resolve-DUSTDependency ExchangeOnlineManagement
                     Connect-ExchangeOnline -DelegatedOrganization $PSBoundParameters.DelegatedOrganization
                 }
                 'SharePoint' { # Same for direct
-                    Connect-SPOService -Uri  $PSBoundParameters.Uri
+                    Resolve-DUSTDependency Microsoft.Online.SharePoint.PowerShell
+                    Connect-SPOService -Uri $PSBoundParameters.Uri
                 }
                 'Teams' {
+                    Resolve-DUSTDependency MicrosoftTeams
                     Connect-MicrosoftTeams -TenantId $PSBoundParameters.TenantId
                 }
                 Default {
-                    Write-Error 'You should never see this, but if you do, report to https://github.com/ReArmedHalo/DUST'
+                    throw 'You should never see this, but if you do, re-run the command with the -Verbose argument and report the output as an issue at https://github.com/ReArmedHalo/DUST'
                 }
             }
         } else {
+            # Direct authentication
             switch ($Service) {
-                'AzureAD' { 
-                    Connect-AzureAD
+                'AzureAD' {
+                    Write-Verbose "Azure AD Environment: $($PSBoundParameters.AzureEnvironmentName)"
+                    Resolve-DUSTDependency AzureAD
+                    Connect-AzureAD -AzureEnvironmentName $PSBoundParameters.AzureEnvironmentName
                 }
                 'ExchangeOnline' {
+                    Resolve-DUSTDependency ExchangeOnlineManagement
                     Connect-ExchangeOnline
                 }
                 'SecurityAndCompliance' {
+                    Resolve-DUSTDependency ExchangeOnlineManagement
                     Connect-IPPSSession
                 }
                 'SharePoint' { # Same for delegated
-                    Connect-SPOService -Uri  $PSBoundParameters.Uri
-                }
-                'SkypeForBusiness' {
-                    $sfboSession = New-CsOnlineSession
-                    Import-PSSession $sfboSession
+                    Resolve-DUSTDependency Microsoft.Online.SharePoint.PowerShell
+                    Connect-SPOService -Uri $PSBoundParameters.Uri
                 }
                 'Teams' {
+                    Resolve-DUSTDependency MicrosoftTeams
                     Connect-MicrosoftTeams
                 }
                 Default {
-                    Write-Error 'You should never see this, but if you do, report to https://github.com/ReArmedHalo/DUST'
+                    throw 'You should never see this, but if you do, re-run the command with the -Verbose argument and report the output as an issue at https://github.com/ReArmedHalo/DUST'
                 }
             }
         }

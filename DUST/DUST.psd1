@@ -27,7 +27,7 @@ Author = 'Dustin Schreiber'
 CompanyName = ''
 
 # Copyright statement for this module
-Copyright = '(c) 2018-2019 Dustin Schreiber. All rights reserved.'
+Copyright = '(c) 2021 Dustin Schreiber. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'DUST is a set of functions to ease administration and access to various Microsoft services such as Office 365 and AzureAD. This module has support for MFA and delegated access to client tenants.'
@@ -57,10 +57,7 @@ RequiredModules = @()
 # RequiredAssemblies = @()
 
 # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-ScriptsToProcess = @(
-    '.\Classes\InboxMailForwardingRule.ps1'
-    '.\Classes\MailboxForwardingRule.ps1'
-)
+# ScriptsToProcess = @()
 
 # Type files (.ps1xml) to be loaded when importing this module
 # TypesToProcess = @()
