@@ -1,6 +1,6 @@
 | AppVeyor (Master) | AppVeyor (Develop) | PowerShell Gallery |
 |-------------------|--------------------|--------------------|
-|[![Build status](https://img.shields.io/appveyor/ci/rearmedhalo/DUST/master.svg)](<https://ci.appveyor.com/project/ReArmedHalo/dust/branch/master>) | [![Build status](https://img.shields.io/appveyor/ci/rearmedhalo/DUST/develop.svg)](<https://ci.appveyor.com/project/ReArmedHalo/dust/branch/develop>) | [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/DUST.svg?style=flat-square&label=DUST)](<https://powershellgallery.com/packages/DUST>) [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/DUST.svg)](<https://powershellgallery.com/packages/DUST>) |
+|[![Build status](https://img.shields.io/appveyor/ci/rearmedhalo/DUST/master.svg?style=for-the-badge)](<https://ci.appveyor.com/project/ReArmedHalo/dust/branch/master>) | [![Build status](https://img.shields.io/appveyor/ci/rearmedhalo/DUST/develop.svg?style=for-the-badge)](<https://ci.appveyor.com/project/ReArmedHalo/dust/branch/develop>) | [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/DUST.svg?style=for-the-badge&label=DUST)](<https://powershellgallery.com/packages/DUST>) [![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/DUST.svg?style=for-the-badge)](<https://powershellgallery.com/packages/DUST>) |
 
 # DUST - Dustin's Utility and Scripting Toolkit
 
