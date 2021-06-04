@@ -1,12 +1,8 @@
-<#
-.EXTERNALHELP ..\..\Connect-OnlineService-help.xml
-#>
 Function Connect-OnlineService {
     [CmdletBinding(DefaultParameterSetName='Direct')]
     Param (
         [Parameter(ParameterSetName='Direct',Mandatory,Position=0)]
         [Parameter(ParameterSetName='Delegated',Mandatory,Position=0)]
-        [Parameter(ParameterSetName='FindDelegated',Mandatory,Position=0)]
         [ValidateSet(
             'AzureAD', # ✔
             'ExchangeOnline', # ✔
@@ -25,7 +21,6 @@ Function Connect-OnlineService {
             # TenantId
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $tenantIdAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $tenantIdAttribute.Position = 1
             $tenantIdAttribute.ParameterSetName = 'Delegated'
             $tenantIdAttribute.ValueFromPipelineByPropertyName = $true
             $parameterAlias = New-Object System.Management.Automation.AliasAttribute -ArgumentList 'CustomerContextId'
@@ -37,9 +32,8 @@ Function Connect-OnlineService {
             # FindTenant
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $findTenantAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $findTenantAttribute.Position = 1
-            $findTenantAttribute.ParameterSetName = 'FindDelegated'
-            $findTenantAttribute.HelpMessage = "Interactively find a delegated tenant to connect to. This only works for partners such Syndication Partners, Breadth Partners, and Reseller Partners. "
+            $findTenantAttribute.ParameterSetName = 'Delegated'
+            $findTenantAttribute.HelpMessage = "Interactively find a delegated tenant to connect to. This only works for partners such Syndication Partners, Breadth Partners, and Reseller Partners."
             $attributeCollection.Add($findTenantAttribute)
             $findTenantParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('FindTenant', [Switch], $attributeCollection)
             $RuntimeParameterDictionary.Add('FindTenant', $findTenantParameter)
@@ -47,7 +41,7 @@ Function Connect-OnlineService {
             # AzureEnvironmentName
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $azureEnvironmentNameAttribute = New-Object System.Management.Automation.ParameterAttribute
-            $azureEnvironmentNameAttribute.Position = 2
+            $azureEnvironmentNameAttribute.Position = 1
             $azureEnvironmentNameAttribute.HelpMessage = "Specifies the name of the Azure environment. The acceptable values for this parameter are: AzureCloud (Default), AzureChinaCloud, AzureUSGovernment, AzureGermanyCloud."
             $attributeCollection.Add((New-Object System.Management.Automation.ValidateSetAttribute(@('AzureCloud','AzureChinaCloud','AzureUSGovernment','AzureGermanyCloud'))))
             $attributeCollection.Add($azureEnvironmentNameAttribute)
@@ -70,7 +64,7 @@ Function Connect-OnlineService {
         
         # --- Teams
         if ($Service -eq 'Teams') {
-            # AuthenticationUrl
+            # TenantId
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $tenantIdAttribute = New-Object System.Management.Automation.ParameterAttribute
             $tenantIdAttribute.Position = 1
@@ -89,7 +83,6 @@ Function Connect-OnlineService {
             $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
             $adminUriAttribute = New-Object System.Management.Automation.ParameterAttribute
             $adminUriAttribute.Position = 1
-            $adminUriAttribute.ParameterSetName = 'Direct'
             $adminUriAttribute.HelpMessage = "The SharePoint admin URL in the format of: https://orgName-admin.sharepoint.com"
             $attributeCollection.Add($adminUriAttribute)
             $adminUriParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('Uri', [String], $attributeCollection)
@@ -153,10 +146,6 @@ Function Connect-OnlineService {
                     Resolve-DUSTDependency ExchangeOnlineManagement
                     Connect-ExchangeOnline -DelegatedOrganization $PSBoundParameters.DelegatedOrganization
                 }
-                'SharePoint' { # Same for direct
-                    Resolve-DUSTDependency Microsoft.Online.SharePoint.PowerShell
-                    Connect-SPOService -Uri $PSBoundParameters.Uri
-                }
                 'Teams' {
                     Resolve-DUSTDependency MicrosoftTeams
                     Connect-MicrosoftTeams -TenantId $PSBoundParameters.TenantId
@@ -181,7 +170,7 @@ Function Connect-OnlineService {
                     Resolve-DUSTDependency ExchangeOnlineManagement
                     Connect-IPPSSession
                 }
-                'SharePoint' { # Same for delegated
+                'SharePoint' {
                     Resolve-DUSTDependency Microsoft.Online.SharePoint.PowerShell
                     Connect-SPOService -Uri $PSBoundParameters.Uri
                 }
