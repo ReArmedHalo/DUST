@@ -109,6 +109,8 @@ PrivateData = @{
         # ReleaseNotes of this module
         # ReleaseNotes = ''
 
+        Prelease = '-alpha'
+
     } # End of PSData hashtable
 
 } # End of PrivateData hashtable
