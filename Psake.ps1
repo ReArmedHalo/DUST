@@ -74,7 +74,7 @@ Task Test -Depends Init, BuildDocs  {
 }
 
 #Task Build -Depends Test {
-Task Build {
+Task Build -Depends Init, BuildDocs {
     $lines
 
     # Load the module, read the exported functions, update the psd1 FunctionsToExport
